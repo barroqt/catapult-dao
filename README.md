@@ -18,39 +18,16 @@ Next, install [yarn](https://yarnpkg.com):
 npm install -g yarn
 ```
 
-### AvalancheGo and Avash
 
-[AvalancheGo](https://github.com/ava-labs/avalanchego) is an Avalanche node implementation written in Go. [Avash](https://docs.avax.network/build/tools/avash) is a tool to quickly deploy local test networks. Together, you can deploy local test networks and run tests on them.
+## Deploy on FUJI testnet
 
-### Solidity and Avalanche
-
-It is also helpful to have a basic understanding of [Solidity](https://docs.soliditylang.org) and [Avalanche](https://docs.avax.network).
-
-## Dependencies
-
-Clone the [quickstart repository](https://github.com/ava-labs/avalanche-smart-contract-quickstart) and install the necessary packages via `yarn`.
+#### Prerequisite:
 
 ```zsh
-$ git clone https://github.com/ava-labs/avalanche-smart-contract-quickstart.git
-$ cd avalanche-smart-contract-quickstart
-$ yarn
+$ export FUJI_PRIVATE_KEY="YOUR_METAMASK_PRIVATE_KEY"
 ```
 
-## Write Contracts
-
-Edit the `Coin.sol` contract in `contracts/`. `Coin.sol` is an [Open Zeppelin](https://openzeppelin.com) [ERC20](https://eips.ethereum.org/EIPS/eip-20) contract. ERC20 is a popular smart contract interface. You can also add your own contracts.
-
-## Hardhat Config
-
-Hardhat uses `hardhat.config.js` as the configuration file. You can define tasks, networks, compilers and more in that file. For more information see [here](https://hardhat.org/config/).
-
-In our repository we use a pre-configured file [hardhat.config.ts](https://github.com/ava-labs/avalanche-smart-contract-quickstart/blob/main/hardhat.config.ts). This file configures necessary network information to provide smooth interaction with Avalanche. There are also some pre-defined private keys for testing on a local test network.
-
-## Hardhat Tasks
-
-You can define custom hardhat tasks in [hardhat.config.ts](https://github.com/ava-labs/avalanche-smart-contract-quickstart/blob/main/hardhat.config.ts).
-
-## Documentation
-
-There is a documentation under the Avalanche's official documentation repository:
-[Using Hardhat with the Avalanche C-Chain](https://docs.avax.network/build/tutorials/smart-contracts/using-hardhat-with-the-avalanche-c-chain)
+```zsh
+$ hh compile
+$ hh run scripts/deploy.ts --network fuji
+```
