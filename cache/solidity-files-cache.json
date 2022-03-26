@@ -37,8 +37,8 @@
       ]
     },
     "/Users/bryanliu/Documents/01.Codes/01.CurrentProjects/13.AvaxBarc/dao-catapult/contracts/DAOFundingFactory.sol": {
-      "lastModificationDate": 1648305104558,
-      "contentHash": "8d403eaf428a97e48902ab28d806ca90",
+      "lastModificationDate": 1648305661266,
+      "contentHash": "54264ce8428b593d72999df163ee43f6",
       "sourceName": "contracts/DAOFundingFactory.sol",
       "solcConfig": {
         "version": "0.8.2",
@@ -76,8 +76,8 @@
       ]
     },
     "/Users/bryanliu/Documents/01.Codes/01.CurrentProjects/13.AvaxBarc/dao-catapult/contracts/Investment.sol": {
-      "lastModificationDate": 1648305095521,
-      "contentHash": "69aac2cbf68755741ea73b85aadaf100",
+      "lastModificationDate": 1648306153691,
+      "contentHash": "be102c60fd0c9aaea48e595d7e94cd29",
       "sourceName": "contracts/Investment.sol",
       "solcConfig": {
         "version": "0.8.2",
@@ -103,7 +103,8 @@
         }
       },
       "imports": [
-        "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol"
+        "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol",
+        "@openzeppelin/contracts/access/AccessControl.sol"
       ],
       "versionPragmas": [
         "^0.8.0"
@@ -254,6 +255,188 @@
       ],
       "artifacts": [
         "Context"
+      ]
+    },
+    "/Users/bryanliu/Documents/01.Codes/01.CurrentProjects/13.AvaxBarc/dao-catapult/node_modules/@openzeppelin/contracts/access/AccessControl.sol": {
+      "lastModificationDate": 1648301245108,
+      "contentHash": "76cae8e1eb9c27e818b0b08e1527f731",
+      "sourceName": "@openzeppelin/contracts/access/AccessControl.sol",
+      "solcConfig": {
+        "version": "0.8.2",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./IAccessControl.sol",
+        "../utils/Context.sol",
+        "../utils/Strings.sol",
+        "../utils/introspection/ERC165.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "AccessControl"
+      ]
+    },
+    "/Users/bryanliu/Documents/01.Codes/01.CurrentProjects/13.AvaxBarc/dao-catapult/node_modules/@openzeppelin/contracts/access/IAccessControl.sol": {
+      "lastModificationDate": 1648301245109,
+      "contentHash": "57c84298234411cea19c7c284d86be8b",
+      "sourceName": "@openzeppelin/contracts/access/IAccessControl.sol",
+      "solcConfig": {
+        "version": "0.8.2",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "IAccessControl"
+      ]
+    },
+    "/Users/bryanliu/Documents/01.Codes/01.CurrentProjects/13.AvaxBarc/dao-catapult/node_modules/@openzeppelin/contracts/utils/Strings.sol": {
+      "lastModificationDate": 1648301245108,
+      "contentHash": "9c54c6c065d9e590fdcdd72c451425b9",
+      "sourceName": "@openzeppelin/contracts/utils/Strings.sol",
+      "solcConfig": {
+        "version": "0.8.2",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "Strings"
+      ]
+    },
+    "/Users/bryanliu/Documents/01.Codes/01.CurrentProjects/13.AvaxBarc/dao-catapult/node_modules/@openzeppelin/contracts/utils/introspection/ERC165.sol": {
+      "lastModificationDate": 1648301249342,
+      "contentHash": "0e7db055ce108f9da7bb6686a00287c0",
+      "sourceName": "@openzeppelin/contracts/utils/introspection/ERC165.sol",
+      "solcConfig": {
+        "version": "0.8.2",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./IERC165.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "ERC165"
+      ]
+    },
+    "/Users/bryanliu/Documents/01.Codes/01.CurrentProjects/13.AvaxBarc/dao-catapult/node_modules/@openzeppelin/contracts/utils/introspection/IERC165.sol": {
+      "lastModificationDate": 1648301249342,
+      "contentHash": "03e6768535ac4da0e9756f1d8a4a018a",
+      "sourceName": "@openzeppelin/contracts/utils/introspection/IERC165.sol",
+      "solcConfig": {
+        "version": "0.8.2",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "IERC165"
       ]
     }
   }
