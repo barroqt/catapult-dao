@@ -15,9 +15,13 @@ function MenuItems() {
         fontWeight: "500",
         width: "100%",
         justifyContent: "center",
+        maxWidth: "200px",
       }}
       defaultSelectedKeys={[pathname]}
     >
+      <Menu.Item key="/create-funding">
+        <NavLink to="/create-funding">🚀 Create-Funding</NavLink>
+      </Menu.Item>
       <Menu.Item key="/quickstart">
         <NavLink to="/quickstart">🚀 Quick Start</NavLink>
       </Menu.Item>

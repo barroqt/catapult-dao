@@ -19,6 +19,7 @@ import "antd/dist/antd.css";
 import NativeBalance from "components/NativeBalance";
 import "./style.css";
 import QuickStart from "components/QuickStart";
+import CreateFunding from "components/CreateFunding";
 import Contract from "components/Contract/Contract";
 import Text from "antd/lib/typography/Text";
 import Ramper from "components/Ramper";
@@ -89,6 +90,9 @@ const App = ({ isServerInfo }) => {
           <Switch>
             <Route exact path="/quickstart">
               <QuickStart isServerInfo={isServerInfo} />
+            </Route>
+            <Route exact path="/create-funding">
+              <CreateFunding />
             </Route>
             <Route path="/wallet">
               <Wallet />
