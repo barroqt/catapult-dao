@@ -5,6 +5,7 @@ import {
   Switch,
   Route,
   Redirect,
+  Link,
 } from "react-router-dom";
 import Account from "components/Account/Account";
 import Chains from "components/Chains";
@@ -19,6 +20,7 @@ import "antd/dist/antd.css";
 import NativeBalance from "components/NativeBalance";
 import "./style.css";
 import QuickStart from "components/QuickStart";
+import Fund from "components/Fund";
 import CreateFunding from "components/CreateFunding";
 import Contract from "components/Contract/Contract";
 import Text from "antd/lib/typography/Text";
@@ -71,7 +73,9 @@ const App = ({ isServerInfo }) => {
     <Layout style={{ height: "100vh", overflow: "auto" }}>
       <Router>
         <Header style={styles.header}>
-          <Logo />
+          <Link to="/">
+            <Logo />
+          </Link>
           <MenuItems />
           <div style={styles.headerRight}>
             <Chains />
@@ -88,8 +92,11 @@ const App = ({ isServerInfo }) => {
 
         <div style={styles.content}>
           <Switch>
-            <Route exact path="/quickstart">
+            <Route exact path="/">
               <QuickStart isServerInfo={isServerInfo} />
+            </Route>
+            <Route exact path='/fund/:id'>
+              <Fund />
             </Route>
             <Route exact path="/create-funding">
               <CreateFunding />
@@ -138,39 +145,7 @@ const App = ({ isServerInfo }) => {
         </div>
       </Router>
       <Footer style={{ textAlign: "center" }}>
-        <Text style={{ display: "block" }}>
-          ⭐️ Please star this{" "}
-          <a
-            href="https://github.com/ethereum-boilerplate/ethereum-boilerplate/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            boilerplate
-          </a>
-          , every star makes us very happy!
-        </Text>
-
-        <Text style={{ display: "block" }}>
-          🙋 You have questions? Ask them on the {""}
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href="https://forum.moralis.io/t/ethereum-boilerplate-questions/3951/29"
-          >
-            Moralis forum
-          </a>
-        </Text>
-
-        <Text style={{ display: "block" }}>
-          📖 Read more about{" "}
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href="https://moralis.io?utm_source=boilerplatehosted&utm_medium=todo&utm_campaign=ethereum-boilerplat"
-          >
-            Moralis
-          </a>
-        </Text>
+        <Text style={{ display: "block" }}>Build at Avalanche Summit 2022</Text>
       </Footer>
     </Layout>
   );
