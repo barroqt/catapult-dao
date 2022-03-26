@@ -76,8 +76,8 @@
       ]
     },
     "/Users/bryanliu/Documents/01.Codes/01.CurrentProjects/13.AvaxBarc/dao-catapult/contracts/Investment.sol": {
-      "lastModificationDate": 1648306153691,
-      "contentHash": "be102c60fd0c9aaea48e595d7e94cd29",
+      "lastModificationDate": 1648312087876,
+      "contentHash": "91ef46f0c42ddeda9883118ac1b2ca9e",
       "sourceName": "contracts/Investment.sol",
       "solcConfig": {
         "version": "0.8.2",
