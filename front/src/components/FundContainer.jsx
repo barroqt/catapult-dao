@@ -1,4 +1,4 @@
-import { Card, Button, Typography } from "antd";
+import { Card, Typography } from "antd";
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -22,7 +22,7 @@ const styles = {
   },
 };
 
-export default function QuickStart() {
+export default function FundContainer() {
   return (
     <div
       style={{
@@ -32,9 +32,6 @@ export default function QuickStart() {
         gap: "10px",
       }}
     >
-      <Link to="/create-funding">
-        <Button>Create a Funding</Button>
-      </Link>
       <Card
         style={styles.card}
         title={
