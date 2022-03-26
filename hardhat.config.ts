@@ -48,13 +48,12 @@ export default {
   networks: {
     hardhat: {
       gasPrice: 225000000000,
-      chainId: !forkingData ? 43112 : undefined, //Only specify a chainId if we are not forking
+      chainId: 1337,
       forking: forkingData
     },
     local: {
       url: 'http://127.0.0.1:8545',
-      gasPrice: 225000000000,
-      chainId: 43112
+      gasPrice: 225000000000
     },
     fuji: {
       url: 'https://api.avax-test.network/ext/bc/C/rpc',
