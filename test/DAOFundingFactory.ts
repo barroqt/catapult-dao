@@ -8,24 +8,10 @@ describe('InvestmentFactory', function () {
     let signers
     let investor1
     let investor2
-    
+    let usdc
+    let args
+    let adminAddress
     before(async function () {
-        // TODO: need to chagen signer to load form private key.
-
-                /**
-                 * Investor call depositAllocation
-                 * Account #15: 0xcd3b766ccdd6ae721141f452c550ca635964ce71 (10000 ETH)
-                 * Private Key: 0x8166f546bab6da521a8369cab06c5d2b9e46670292d85c875ee9ec20e84ffb61
-                 */
-
-        // // const network = 'http://127.0.0.1:8545/';
-        // const network = new ethers.providers.JsonRpcProvider('http://127.0.0.1:8545/')
-        // const provider = ethers.providers.getDefaultProvider(network);
-        
-        // const privateKey = '0x8166f546bab6da521a8369cab06c5d2b9e46670292d85c875ee9ec20e84ffb61'
-        // const walletSigner = new ethers.Wallet(privateKey, provider);
-
-
         const signers = await ethers.getSigners();
 
         const [owner, signer, ] = signers
@@ -35,12 +21,25 @@ describe('InvestmentFactory', function () {
 
         this.Investment = await ethers.getContractFactory("Investment", owner);
         this.InvestmentFactory = await ethers.getContractFactory("InvestmentFactory", owner);
+        this.TestCoin = await ethers.getContractFactory("TestToken", owner);
     });
 
     beforeEach(async function () {
         this.investment = await this.Investment.deploy();
         this.investmentFactory = await this.InvestmentFactory.deploy(this.investment.address)
+        this.testCoin = await this.TestCoin.deploy(1000 * 10**6 )
+        await this.testCoin.deployed()
+        console.log("#this.testCoin", this.testCoin.address)
         await this.investmentFactory.deployed()
+
+        usdc = this.testCoin.address
+        adminAddress = await adminUser.getAddress()
+        args = [
+            adminAddress,
+            1000,
+            usdc,
+            100,
+            200]
     });
 
     // Test cases
@@ -49,13 +48,6 @@ describe('InvestmentFactory', function () {
     //  DAOFundingFactory
     //////////////////////////////
     describe("DAOFundingFactory", function () {
-        const adminAddress = '0xdff7b4C69571eCfc041b9434Bb600639Cea175Cc'
-        const usdc = '0x45ea5d57BA80B5e3b0Ed502e9a08d568c96278F9'
-        const args = [adminAddress,
-            1000,
-            usdc,
-            100,
-            200]
         it('has the Investment address', async function () {
             expect(await this.investmentFactory.masterContractAddress())
                 .to.eq(this.investment.address);
