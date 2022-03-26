@@ -11,11 +11,11 @@ const main = async(): Promise<any> => {
   await investment.deployed();
   console.log(`Investment deployed to: ${investment.address}`)
 
-  const DAOFundingFactory: ContractFactory = await ethers.getContractFactory("DAOFundingFactory");
-  const daoFundingFactory: Contract = await DAOFundingFactory.deploy(investment.address);
+  const InvestmentFactory: ContractFactory = await ethers.getContractFactory("InvestmentFactory");
+  const daoFundingFactory: Contract = await InvestmentFactory.deploy(investment.address);
 
   await daoFundingFactory.deployed()
-  console.log(`DAOFundingFactory deployed to: ${daoFundingFactory.address}`)
+  console.log(`InvestmentFactory deployed to: ${daoFundingFactory.address}`)
 }
 
 main()
