@@ -37,8 +37,8 @@
       ]
     },
     "/Users/bryanliu/Documents/01.Codes/01.CurrentProjects/13.AvaxBarc/dao-catapult/contracts/Investment.sol": {
-      "lastModificationDate": 1648312087876,
-      "contentHash": "91ef46f0c42ddeda9883118ac1b2ca9e",
+      "lastModificationDate": 1648325635630,
+      "contentHash": "c314230c7891d751e1d2f935746a2b2d",
       "sourceName": "contracts/Investment.sol",
       "solcConfig": {
         "version": "0.8.2",
@@ -65,7 +65,8 @@
       },
       "imports": [
         "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol",
-        "@openzeppelin/contracts/access/AccessControl.sol"
+        "@openzeppelin/contracts/access/AccessControl.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol"
       ],
       "versionPragmas": [
         "^0.8.0"
@@ -401,7 +402,7 @@
       ]
     },
     "/Users/bryanliu/Documents/01.Codes/01.CurrentProjects/13.AvaxBarc/dao-catapult/contracts/InvestmentFactory.sol": {
-      "lastModificationDate": 1648316962766,
+      "lastModificationDate": 1648317236117,
       "contentHash": "de45b9431c19c4f31cf874f3c2862758",
       "sourceName": "contracts/InvestmentFactory.sol",
       "solcConfig": {
@@ -437,6 +438,41 @@
       ],
       "artifacts": [
         "InvestmentFactory"
+      ]
+    },
+    "/Users/bryanliu/Documents/01.Codes/01.CurrentProjects/13.AvaxBarc/dao-catapult/node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol": {
+      "lastModificationDate": 1648301249346,
+      "contentHash": "a44d1a099633876550ad2476b21bafbe",
+      "sourceName": "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+      "solcConfig": {
+        "version": "0.8.2",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "IERC20"
       ]
     }
   }
