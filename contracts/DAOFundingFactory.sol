@@ -1,17 +1,16 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./DAOFunding.sol";
+import "./Investment.sol";
 import "./CloneFactory.sol";
-//import "@optionality.io/clone-factory/contracts/CloneFactory.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract DAOFundingFactory is CloneFactory, Ownable {
 
-    DAOFunding[] public children;
+    Investment[] public investments;
     address public masterContractAddress;
 
-    event DAOFundingCreated(address newDAOFundingAddress);
+    event InvestmentCreated(address newInvestmentAddress);
 
     constructor (address _masterContractAddress) {
         masterContractAddress = _masterContractAddress;
@@ -23,8 +22,8 @@ contract DAOFundingFactory is CloneFactory, Ownable {
 
     function createDAOFunding(uint256 _x) public onlyOwner {
         address clone = createClone(masterContractAddress);
-        DAOFunding(clone).init(_x);
-        children.push(DAOFunding(clone));
-        emit DAOFundingCreated(clone);
+        Investment(clone).init(_x);
+        investments.push(Investment(clone));
+        emit InvestmentCreated(clone);
     }
 }
