@@ -32,8 +32,6 @@ contract Investment is Initializable {
     mapping(address => bool) public hasInvested;
 
     IERC20 public token;
-
-    // TODO: allocation percentage: mapping(address => uint)
    
     function init(uint256 _fundingGoal, uint256 _allocatedMaxAmount, uint256 _startDate, uint256 _endDate, address _token) external initializer {
         investor = msg.sender;
@@ -50,7 +48,7 @@ contract Investment is Initializable {
         _;
     }
 
-    function depositAllocation(uint _amount, address _to) external payable {
+    function depositAllocation(uint _amount) external payable {
         require(balances[msg.sender] >= _amount, "Not enough tokens");
         require(!hasInvested[msg.sender], "This user already invested");
         require(userSpentAmount + _amount <= fundingGoal, "Can't invest more than the campaign goal");
@@ -62,7 +60,7 @@ contract Investment is Initializable {
         hasInvested[msg.sender] = true; // We know this address is eligible for rewards
         investedAmount[msg.sender] = _amount; // We know the amount invested by this address
         userSpentAmount += _amount; // The amount of token invested for this campaign
-        token.transferFrom(msg.sender, _to, _amount);
+        token.transferFrom(msg.sender, address(this), _amount);
     }
 
     // todo : make sure dao has transfered enough tokens
