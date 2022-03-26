@@ -8,26 +8,25 @@ The goal of this guide is to lay out best practices regarding writing, testing a
 
 ## Prerequisites
 
-### NodeJS and Yarn
-
-First, install the LTS (long-term support) version of [nodejs](https://nodejs.org/en). This is `14.17.0` at the time of writing. NodeJS bundles `npm`.
-
-Next, install [yarn](https://yarnpkg.com):
+### Run local node
 
 ```zsh
-npm install -g yarn
+npx hardhat node
 ```
 
-
-## Deploy on FUJI testnet
-
-#### Prerequisite:
+### Compile
 
 ```zsh
-$ export FUJI_PRIVATE_KEY="YOUR_METAMASK_PRIVATE_KEY"
+npx hardhat compile
 ```
 
+and get the .json for the 2 contracts in `artifacts/contracts`. These 2 jsons will have to be copied and placed in the frontend.
+
+
+### Deploy on your local node
+
 ```zsh
-$ hh compile
-$ hh run scripts/deploy.ts --network fuji
+npx hardhat run --network local scripts/deploy.ts
 ```
+
+You should keep the contract addresses and change `FACTORY_ADDRESS` in the config.js in the Frontend package.
