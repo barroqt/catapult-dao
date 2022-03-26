@@ -552,8 +552,8 @@
       ]
     },
     "/Users/bryanliu/Documents/01.Codes/01.CurrentProjects/13.AvaxBarc/dao-catapult/contracts/TestToken.sol": {
-      "lastModificationDate": 1648328886308,
-      "contentHash": "fcf7c03c15a21c8b4bde1d58067efd17",
+      "lastModificationDate": 1648333757755,
+      "contentHash": "8286c5b70a76026b2a8b23a5721a18a2",
       "sourceName": "contracts/TestToken.sol",
       "solcConfig": {
         "version": "0.8.2",

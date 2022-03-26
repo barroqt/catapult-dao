@@ -29,7 +29,7 @@ describe('InvestmentFactory', function () {
         this.investmentFactory = await this.InvestmentFactory.deploy(this.investment.address)
         await this.investmentFactory.deployed()
 
-        testCoin = await this.TestCoin.deploy(5000 * 10**6 )
+        testCoin = await this.TestCoin.deploy(5000)
         await testCoin.deployed()
         console.log("#testCoin", testCoin.address)
         
@@ -42,7 +42,7 @@ describe('InvestmentFactory', function () {
             100,
             200]
             const inv1Address = await investor1.getAddress()
-            testCoin.transfer(inv1Address, 10 * 10 ** 18)
+        await testCoin.transfer(inv1Address, 900)
         console.log('#inv1Address balance ', await testCoin.balanceOf(inv1Address))
         console.log('#owner balance ', await testCoin.balanceOf(await owner.getAddress()))
     });
@@ -156,7 +156,7 @@ describe('InvestmentFactory', function () {
                 expect(expectedAlloc.length).to.eq(3)
                 expect(expectedAlloc.allocationSize).to.eq(1000)
                 
-                const result = await investmentChildContract.connect(investor1).depositAllocation(1000)
+                const result = await investmentChildContract.connect(investor1).depositAllocation(10)
 
                 expect(result).to.eq(1)
             })
