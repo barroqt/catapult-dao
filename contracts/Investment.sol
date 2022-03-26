@@ -108,8 +108,10 @@ contract Investment is Initializable, AccessControl {
         console.log('!!! token balance msg.sender ', token.balanceOf(msg.sender));
         console.log('!!! token balance address(this) ', token.balanceOf(address(this)));
         token.approve(msg.sender,_amount);
-        token.transferFrom(msg.sender, address(this), 1);
+        token.transferFrom(msg.sender, address(this), _amount);
         investorAlloc.fundedSize += _amount;
+        console.log('!!! after balance msg.sender ', token.balanceOf(msg.sender));
+        console.log('!!! after balance address(this) ', token.balanceOf(address(this)));
     }
 
     // // todo : make sure dao has transfered enough tokens
