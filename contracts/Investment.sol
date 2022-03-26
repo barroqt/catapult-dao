@@ -18,8 +18,8 @@ contract Investment is Initializable {
 
     // Funding round
     uint256 public fundingGoal;
-    uint256 public startDate = 1638352800; // hard coded for test purposes
-    uint256 public endDate = 1638871200; // hard coded for test purposes
+    uint256 public startDate; 
+    uint256 public endDate;
     uint256 public totalAllocatedAmount = 0;
 
     // User balances
@@ -34,10 +34,13 @@ contract Investment is Initializable {
 
     // TODO: allocation percentage: mapping(address => uint)
    
-    function init(uint256 _fundingGoal, address _token) external initializer {
+   // use timestamp startDate:1648196138 (2022-03-25 09:15:38) endDate:1648624538 (2022-03-30 09:15:38) for passing later checks
+    function init(uint256 _fundingGoal, uint256 _startDate, uint256 _endDate, address _token) external initializer {
         investor = msg.sender;
         balances[investor] = investor.balance;
         fundingGoal = _fundingGoal;
+        startDate = _startDate;
+        endDate = _endDate;
         token = IERC20(_token);
     }
 
@@ -50,8 +53,8 @@ contract Investment is Initializable {
         require(balances[msg.sender] >= _amount, "Not enough tokens");
         require(!hasInvested[msg.sender], "This user already invested");
         require(totalAllocatedAmount + _amount <= fundingGoal, "Can't invest more than the targeted amount");
-        // require(now > startDate, "The campaign has not started yet");
-        // require(now < endDate, "The campaign is over");
+        require(block.timestamp > startDate, "The campaign has not started yet");
+        require(block.timestamp < endDate, "The campaign is over");
 
         hasInvested[msg.sender] = true; // We know this address is eligible for rewards
         investedAmount[msg.sender] = _amount; // We know the amount invested by this address
@@ -60,7 +63,7 @@ contract Investment is Initializable {
     }
     
     function sendRewards(uint _amount, address _to) external onlyAdmin() {
-        // require(now > endDate, "The campaign is not over");
+        require(block.timestamp > endDate, "The campaign is not over");
         require(hasInvested[_to], "This user did not invest");
         hasInvested[msg.sender] = false;
         // TODO add percentage reward
