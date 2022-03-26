@@ -20,9 +20,9 @@ contract DAOFundingFactory is CloneFactory, Ownable {
         masterContractAddress = _masterContractAddress;
     }
 
-    function createDAOFunding(uint256 _x) public onlyOwner {
+    function createDAOFunding(address admin) public onlyOwner {
         address clone = createClone(masterContractAddress);
-        Investment(clone).init(_x);
+        Investment(clone).init(admin);
         investments.push(Investment(clone));
         emit InvestmentCreated(clone);
     }

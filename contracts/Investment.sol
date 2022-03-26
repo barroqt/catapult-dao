@@ -6,10 +6,10 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 // TODO(system): implement logic around DAO (deposit, withdraw, distribute)
 contract Investment is Initializable {
 
-    uint256 public x;
+    address public admin;
 
-    function init(uint256 _x) external initializer {
-        x = _x;
+    function init(address _admin) external initializer {
+        admin = _admin;
     }
 
     function setX(uint256 _x) external {
