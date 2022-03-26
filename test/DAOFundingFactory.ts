@@ -11,7 +11,7 @@ describe('InvestmentFactory', function () {
     let usdc
     let args
     let adminAddress
-    let testCoin
+    let testCoin: Contract
     before(async function () {
         const signers = await ethers.getSigners();
         owner = signers[0]
@@ -29,7 +29,7 @@ describe('InvestmentFactory', function () {
         this.investmentFactory = await this.InvestmentFactory.deploy(this.investment.address)
         await this.investmentFactory.deployed()
 
-        testCoin = await this.TestCoin.deploy(5000)
+        testCoin = await this.TestCoin.deploy(5000 * 10 ** 6)
         await testCoin.deployed()
         console.log("#testCoin", testCoin.address)
         
@@ -37,14 +37,16 @@ describe('InvestmentFactory', function () {
         adminAddress = await adminUser.getAddress()
         args = [
             adminAddress,
-            1000,
-            usdc,
-            100,
-            200]
-            const inv1Address = await investor1.getAddress()
+            5000, // fundingGoal
+            usdc, // token
+            100, // start
+            200] // end
+        const inv1Address = await investor1.getAddress()
+        
         await testCoin.transfer(inv1Address, 900)
         console.log('#inv1Address balance ', await testCoin.balanceOf(inv1Address))
         console.log('#owner balance ', await testCoin.balanceOf(await owner.getAddress()))
+        
     });
 
     // Test cases
@@ -156,7 +158,12 @@ describe('InvestmentFactory', function () {
                 expect(expectedAlloc.length).to.eq(3)
                 expect(expectedAlloc.allocationSize).to.eq(1000)
                 
-                const result = await investmentChildContract.connect(investor1).depositAllocation(10)
+                console.log('#b4 inv1Address balance ', await testCoin.balanceOf(await investor1.getAddress()))
+                console.log('##b4 owner balance ', await testCoin.balanceOf(await owner.getAddress()))
+
+                await testCoin.approve(investor1)
+
+                const result = await investmentChildContract.connect(investor1).depositAllocation(3)
 
                 expect(result).to.eq(1)
             })

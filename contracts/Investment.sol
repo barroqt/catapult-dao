@@ -5,6 +5,8 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
+import "hardhat/console.sol";
+
 // TODO(system): implement logic around DAO (deposit, withdraw, distribute)
 contract Investment is Initializable, AccessControl {
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
@@ -102,8 +104,11 @@ contract Investment is Initializable, AccessControl {
         // investedAmount[msg.sender] = _amount; // We know the amount invested by this address
         // userSpentAmount += _amount; // The amount of token invested for this campaign
 
-        
-        token.transferFrom(msg.sender, address(this), _amount);
+        console.log('!!! b4 txfer');
+        console.log('!!! token balance msg.sender ', token.balanceOf(msg.sender));
+        console.log('!!! token balance address(this) ', token.balanceOf(address(this)));
+        token.approve(msg.sender,_amount);
+        token.transferFrom(msg.sender, address(this), 1);
         investorAlloc.fundedSize += _amount;
     }
 
@@ -111,10 +116,11 @@ contract Investment is Initializable, AccessControl {
     // function distributeToken(address[] memory _investors) external  {
     //     require(block.timestamp > endDate, "The campaign is not over");
     //     for (uint i = 0; i < _investors.length; i++) {
-    //         require(hasInvested[_investors[i]], "This user did not invest");
-    //         hasInvested[_investors[i]] = false;
-    //         uint amountToSend = (percentageDistributed[_investors[i]] / 100) * daoTokenAllocation;
-    //         token.transferFrom(msg.sender, _investors[i], amountToSend);
+            
+    //         // require(hasInvested[_investors[i]], "This user did not invest");
+    //         // hasInvested[_investors[i]] = false;
+    //         // uint amountToSend = (percentageDistributed[_investors[i]] / 100) * daoTokenAllocation;
+    //         // token.transferFrom(msg.sender, _investors[i], amountToSend);
     //     }
     // }
 
