@@ -161,9 +161,9 @@ describe('InvestmentFactory', function () {
                 console.log('#b4 inv1Address balance ', await testCoin.balanceOf(await investor1.getAddress()))
                 console.log('##b4 owner balance ', await testCoin.balanceOf(await owner.getAddress()))
 
-                await testCoin.connect(investor1).approve(investmentChildContract.address, ethers.BigNumber.from(10))
+                await testCoin.connect(investor1).approve(investmentChildContract.address, ethers.BigNumber.from(7))
 
-                const result = await investmentChildContract.connect(investor1).depositAllocation(3)
+                const result = await investmentChildContract.connect(investor1).depositAllocation(7)
 
                 expect(result).to.eq(1)
             })
