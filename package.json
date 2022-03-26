@@ -1,9 +1,10 @@
 {
-  "name": "avalanche-smart-contract-quickstart",
+  "name": "CatapultDAO",
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.5",
     "@nomiclabs/hardhat-waffle": "^2.0.3",
-    "@openzeppelin/contracts": "^4.3.0",
+    "@openzeppelin/contracts": "^4.5.0",
+    "@openzeppelin/contracts-upgradeable": "^4.5.2",
     "@types/chai": "^4.2.21",
     "@types/mocha": "^9.0.0",
     "@types/node": "^16.7.1",
@@ -21,12 +22,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "repository": "https://github.com/ava-labs/avalanche-smart-contract-quickstart",
-  "author": "Connor Daly <connor.daly@avalabs.org>",
-  "contributors": [
-    "Gabriel Cardona <gabriel@avalabs.org>"
-  ],
-  "license": "BSD-3-Clause",
+  "repository": "https://github.com/barroqt/catapult-dao",
+  "author": "",
+  "license": "BSD-3-Clause License",
   "scripts": {
     "precompile": "rimraf ./build/",
     "compile": "npx hardhat compile",
@@ -34,11 +32,6 @@
     "pretest": "yarn compile",
     "test": "npx hardhat test",
     "deploy": "npx hardhat run scripts/deploy.ts",
-    "erc20": "npx hardhat run scripts/erc20.ts",
-    "nft": "npx hardhat run scripts/nft.ts --network mainnet",
-    "storage": "npx hardhat run scripts/storage.ts",
-    "send-avax-wallet-signer": "npx hardhat run scripts/sendAvaxWalletSigner.ts",
-    "send-avax-json-provider": "npx hardhat run scripts/sendAvaxJSONProvider.ts",
     "lint": "prettier ./test/**/*.ts --check",
     "prepublishOnly": "yarn test",
     "hardhat": "npx hardhat",
