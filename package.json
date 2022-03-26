@@ -39,7 +39,9 @@
     "balances": "npx hardhat balances",
     "fund-cchain-addresses": "npx hardhat run scripts/fund-cchain-addresses.js"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@nomiclabs/buidler": "^1.4.8"
+  },
   "engines": {
     "node": ">=14.17.0"
   }
