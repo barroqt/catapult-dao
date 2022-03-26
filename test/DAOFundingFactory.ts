@@ -1,6 +1,6 @@
-const { expect } = require('chai');
-const { BigNumber, utils } = require('ethers');
-const { ethers } = require('hardhat');
+import { expect } from 'chai'; 
+import{ BigNumber, utils } from 'ethers'; 
+import { ethers } from 'hardhat';
 
 describe('InvestmentFactory', function () {
     let adminUser // this should be ADMIN user
@@ -40,6 +40,10 @@ describe('InvestmentFactory', function () {
             usdc,
             100,
             200]
+
+        // test txf token
+        await this.testCoin.transfer((await investor1.getAddress(), 30 * 10 ** 6))
+        await this.testCoin.transfer((await investor2.getAddress(), 30 * 10 ** 6))
     });
 
     // Test cases
