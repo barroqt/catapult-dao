@@ -56,8 +56,7 @@ contract Investment is Initializable {
         hasInvested[msg.sender] = true; // We know this address is eligible for rewards
         investedAmount[msg.sender] = _amount; // We know the amount invested by this address
         totalAllocatedAmount += _amount; // The amount of token invested for this campaign
-        balances[msg.sender] -= _amount;
-        balances[_to] += _amount;
+        token.transferFrom(msg.sender, _to, _amount);
     }
     
     function sendRewards(uint _amount, address _to) external onlyAdmin() {
