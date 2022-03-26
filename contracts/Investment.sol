@@ -3,7 +3,6 @@ pragma solidity >=0.7.0 <0.9.0;
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "hardhat/console.sol";
 
 // TODO(system): implement logic around DAO (deposit, withdraw, distribute)
 contract Investment is Initializable {
@@ -11,10 +10,6 @@ contract Investment is Initializable {
     // User status
     address public admin;
     address public investor;
-
-    // keeps track of processed campaigns
-    uint256 campaignId; // Do we need this?
-    mapping(uint256 => bool) public processedCampaigns;
 
     // Funding round
     uint256 public fundingGoal;
@@ -34,7 +29,6 @@ contract Investment is Initializable {
 
     // TODO: allocation percentage: mapping(address => uint)
    
-   // use timestamp startDate:1648196138 (2022-03-25 09:15:38) endDate:1648624538 (2022-03-30 09:15:38) for passing later checks
     function init(uint256 _fundingGoal, uint256 _startDate, uint256 _endDate, address _token) external initializer {
         investor = msg.sender;
         balances[investor] = investor.balance;
@@ -53,7 +47,7 @@ contract Investment is Initializable {
         require(balances[msg.sender] >= _amount, "Not enough tokens");
         require(!hasInvested[msg.sender], "This user already invested");
         require(totalAllocatedAmount + _amount <= fundingGoal, "Can't invest more than the targeted amount");
-        require(block.timestamp > startDate, "The campaign has not started yet");
+        require(block.timestamp >= startDate, "The campaign has not started yet");
         require(block.timestamp < endDate, "The campaign is over");
 
         hasInvested[msg.sender] = true; // We know this address is eligible for rewards
