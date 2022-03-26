@@ -2,20 +2,20 @@ const { expect } = require('chai');
 const { BigNumber, utils } = require('ethers');
 const { ethers } = require('hardhat');
 
-describe('DAOFundingFactory', function () {
+describe('InvestmentFactory', function () {
     let user01
     let owner
     before(async function () {
         const [owner, signer] = await ethers.getSigners();
         user01 = signer
         this.Investment = await ethers.getContractFactory("Investment", owner);
-        this.DAOFundingFactory = await ethers.getContractFactory("DAOFundingFactory", owner);
+        this.InvestmentFactory = await ethers.getContractFactory("InvestmentFactory", owner);
     });
 
     beforeEach(async function () {
         this.investment = await this.Investment.deploy();
-        this.daoFundingFactory = await this.DAOFundingFactory.deploy(this.investment.address)
-        await this.daoFundingFactory.deployed()
+        this.investmentFactory = await this.InvestmentFactory.deploy(this.investment.address)
+        await this.investmentFactory.deployed()
     });
 
     // Test cases
@@ -32,30 +32,30 @@ describe('DAOFundingFactory', function () {
             100,
             200]
         it('has the Investment address', async function () {
-            expect(await this.daoFundingFactory.masterContractAddress())
+            expect(await this.investmentFactory.masterContractAddress())
                 .to.eq(this.investment.address);
         });
 
         it('can create Investment clones', async function () {
             for (let i = 0; i < 10; i++) {
-                await this.daoFundingFactory.createDAOFunding(...args);
-                const investmentChildAddress = this.daoFundingFactory.investments(i);
+                await this.investmentFactory.createDAOFunding(...args);
+                const investmentChildAddress = this.investmentFactory.investments(i);
                 const investmentChildContract = this.investment.attach(investmentChildAddress);
                 expect(await investmentChildContract.admin()).to.eq(adminAddress);
             }
         });
 
         it('emits the InvestmentCreated event', async function () {
-            await expect(this.daoFundingFactory.createDAOFunding(...args)).to
-                .emit(this.daoFundingFactory, 'InvestmentCreated')
-                .withArgs(await this.daoFundingFactory.investments(0));
+            await expect(this.investmentFactory.createDAOFunding(...args)).to
+                .emit(this.investmentFactory, 'InvestmentCreated')
+                .withArgs(await this.investmentFactory.investments(0));
         })
 
         // TEST ADMIN RBAC
         describe("#createAllocation", function () {
             it('throw error if called by user without ADMIN role ', async function () {
-                await this.daoFundingFactory.createDAOFunding(...args);
-                const investmentChildAddress = this.daoFundingFactory.investments(0);
+                await this.investmentFactory.createDAOFunding(...args);
+                const investmentChildAddress = this.investmentFactory.investments(0);
                 const investmentChildContract = this.investment.attach(investmentChildAddress);
                 const investorAddr = '0x8626f6940e2eb28930efb4cef49b2d1f2c9c1199'
                 await expect(investmentChildContract.connect(user01).createAllocation(
@@ -67,8 +67,8 @@ describe('DAOFundingFactory', function () {
             it('should pass  if called by user with ADMIN role ', async function () {
                 const adminArgs = [...args]
                 adminArgs[0] = user01.getAddress()
-                await this.daoFundingFactory.createDAOFunding(...adminArgs);
-                const investmentChildAddress = this.daoFundingFactory.investments(0);
+                await this.investmentFactory.createDAOFunding(...adminArgs);
+                const investmentChildAddress = this.investmentFactory.investments(0);
                 const investmentChildContract = this.investment.attach(investmentChildAddress);
                 // const investorAddr = '0x8626f6940e2eb28930efb4cef49b2d1f2c9c1199'
                 // TODO FIX this test

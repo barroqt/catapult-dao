@@ -5,7 +5,7 @@ import "./Investment.sol";
 import "./CloneFactory.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract DAOFundingFactory is CloneFactory, Ownable {
+contract InvestmentFactory is CloneFactory, Ownable {
 
     Investment[] public investments;
     address public masterContractAddress;
