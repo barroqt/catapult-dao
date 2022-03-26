@@ -104,7 +104,7 @@ contract Investment is Initializable, AccessControl {
 
         
         token.transferFrom(msg.sender, address(this), _amount);
-
+        investorAlloc.fundedSize += _amount;
     }
 
     // // todo : make sure dao has transfered enough tokens

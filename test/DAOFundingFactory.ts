@@ -1,5 +1,5 @@
 import { expect } from 'chai'; 
-import{ BigNumber, utils } from 'ethers'; 
+import{ Contract } from 'ethers'; 
 import { ethers } from 'hardhat';
 
 describe('InvestmentFactory', function () {
@@ -11,11 +11,11 @@ describe('InvestmentFactory', function () {
     let usdc
     let args
     let adminAddress
+    let testCoin
     before(async function () {
         const signers = await ethers.getSigners();
-
-        const [owner, signer, ] = signers
-        adminUser = signer
+        owner = signers[0]
+        adminUser = signers[1]
         investor1 = signers[2]
         investor2 = signers[3]
 
@@ -27,12 +27,13 @@ describe('InvestmentFactory', function () {
     beforeEach(async function () {
         this.investment = await this.Investment.deploy();
         this.investmentFactory = await this.InvestmentFactory.deploy(this.investment.address)
-        this.testCoin = await this.TestCoin.deploy(1000 * 10**6 )
-        await this.testCoin.deployed()
-        console.log("#this.testCoin", this.testCoin.address)
         await this.investmentFactory.deployed()
 
-        usdc = this.testCoin.address
+        testCoin = await this.TestCoin.deploy(5000 * 10**6 )
+        await testCoin.deployed()
+        console.log("#testCoin", testCoin.address)
+        
+        usdc = testCoin.address
         adminAddress = await adminUser.getAddress()
         args = [
             adminAddress,
@@ -40,10 +41,10 @@ describe('InvestmentFactory', function () {
             usdc,
             100,
             200]
-
-        // test txf token
-        await this.testCoin.transfer((await investor1.getAddress(), 30 * 10 ** 6))
-        await this.testCoin.transfer((await investor2.getAddress(), 30 * 10 ** 6))
+            const inv1Address = await investor1.getAddress()
+            testCoin.transfer(inv1Address, 10 * 10 ** 18)
+        console.log('#inv1Address balance ', await testCoin.balanceOf(inv1Address))
+        console.log('#owner balance ', await testCoin.balanceOf(await owner.getAddress()))
     });
 
     // Test cases

@@ -37,8 +37,8 @@
       ]
     },
     "/Users/bryanliu/Documents/01.Codes/01.CurrentProjects/13.AvaxBarc/dao-catapult/contracts/Investment.sol": {
-      "lastModificationDate": 1648328184897,
-      "contentHash": "1d55bb366e6feec93bfc42fbc20bd72c",
+      "lastModificationDate": 1648333503553,
+      "contentHash": "d44c55cd4fc322650f4d13c3ace54832",
       "sourceName": "contracts/Investment.sol",
       "solcConfig": {
         "version": "0.8.2",
@@ -402,7 +402,7 @@
       ]
     },
     "/Users/bryanliu/Documents/01.Codes/01.CurrentProjects/13.AvaxBarc/dao-catapult/contracts/InvestmentFactory.sol": {
-      "lastModificationDate": 1648317236117,
+      "lastModificationDate": 1648333131674,
       "contentHash": "de45b9431c19c4f31cf874f3c2862758",
       "sourceName": "contracts/InvestmentFactory.sol",
       "solcConfig": {
