@@ -5,6 +5,7 @@
 package-lock.json
 yarn.lock
 /artifacts
+/cache
 
 # testing
 /coverage
