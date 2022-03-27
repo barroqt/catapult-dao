@@ -5,7 +5,7 @@ import "./Investment.sol";
 import "./CloneFactory.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract DAOFundingFactory is CloneFactory, Ownable {
+contract InvestmentFactory is CloneFactory, Ownable {
 
     Investment[] public investments;
     address public masterContractAddress;
@@ -20,9 +20,17 @@ contract DAOFundingFactory is CloneFactory, Ownable {
         masterContractAddress = _masterContractAddress;
     }
 
-    function createDAOFunding(uint256 _x) public onlyOwner {
+    function createDAOFunding(
+        uint256 fundingGoal,
+        uint256 allocatedMaxAmount,
+        uint256 startDate,
+        uint256 endDate,
+        address fundingToken
+        ) public onlyOwner {
         address clone = createClone(masterContractAddress);
-        Investment(clone).init(_x);
+        Investment(clone).init(
+            fundingGoal,allocatedMaxAmount,startDate,endDate,fundingToken
+            );
         investments.push(Investment(clone));
         emit InvestmentCreated(clone);
     }

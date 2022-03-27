@@ -17,9 +17,8 @@ contract Investment is Initializable {
     uint256 public endDate;
     uint256 public userSpentAmount = 0; // final size
     uint256 public allocatedMaxAmount; // initial size
-    // uint256 public percentageDistributed;
     // no use case yet, but would be useful to show the max potential token distributed if investors fulfills the allocation
-    uint256 public maxPercentageDistributed = (allocatedMaxAmount / fundingGoal) * 100;
+    uint256 public maxPercentageDistributed;
     uint256 public daoTokenAllocation = 1000000000000;
 
     // User balances
@@ -41,6 +40,7 @@ contract Investment is Initializable {
         startDate = _startDate;
         endDate = _endDate;
         token = IERC20(_token);
+        maxPercentageDistributed = (allocatedMaxAmount * 100) / fundingGoal;
     }
 
     modifier onlyAdmin() {
@@ -56,7 +56,7 @@ contract Investment is Initializable {
         require(block.timestamp >= startDate, "The campaign has not started yet");
         require(block.timestamp < endDate, "The campaign is over");
 
-        percentageDistributed[msg.sender] = (userSpentAmount / fundingGoal) * 100;
+        percentageDistributed[msg.sender] = (userSpentAmount * 100) / fundingGoal;
         hasInvested[msg.sender] = true; // We know this address is eligible for rewards
         investedAmount[msg.sender] = _amount; // We know the amount invested by this address
         userSpentAmount += _amount; // The amount of token invested for this campaign
@@ -69,11 +69,16 @@ contract Investment is Initializable {
         for (uint i = 0; i < _investors.length; i++) {
             require(hasInvested[_investors[i]], "This user did not invest");
             hasInvested[_investors[i]] = false;
-            uint amountToSend = (percentageDistributed[_investors[i]] / 100) * daoTokenAllocation;
+            uint amountToSend = (percentageDistributed[_investors[i]] * 100) / daoTokenAllocation;
             token.transferFrom(msg.sender, _investors[i], amountToSend);
         }
     }
 
-    // TODO: if finalSize < initialSize : start another round
+    function extendDuration() external onlyAdmin() {
+        require(block.timestamp > endDate, "The campaign is not over");
+        require(userSpentAmount < allocatedMaxAmount, "The final goal had been reached.");
 
+        endDate += 7 days;
+        // TODO: Complete unfinished allocations in a "free for all" manner
+    }
 }
