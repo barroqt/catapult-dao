@@ -12,10 +12,10 @@ const main = async(): Promise<any> => {
   console.log(`Investment deployed to: ${investment.address}`)
 
   const InvestmentFactory: ContractFactory = await ethers.getContractFactory("InvestmentFactory");
-  const daoFundingFactory: Contract = await InvestmentFactory.deploy(investment.address);
+  const investmentFactory: Contract = await InvestmentFactory.deploy(investment.address);
 
-  await daoFundingFactory.deployed()
-  console.log(`InvestmentFactory deployed to: ${daoFundingFactory.address}`)
+  await investmentFactory.deployed()
+  console.log(`InvestmentFactory deployed to: ${investmentFactory.address}`)
 }
 
 main()

@@ -21,10 +21,10 @@ describe('InvestmentFactory', function () {
     // Test cases
 
     //////////////////////////////
-    //  DAOFundingFactory
+    //  InvestmentFactory
     //////////////////////////////
-    describe("DAOFundingFactory", function () {
-        const adminAddress = '0xdff7b4C69571eCfc041b9434Bb600639Cea175Cc'
+describe("InvestmentFactory", function () {
+    const adminAddress = '0xdff7b4C69571eCfc041b9434Bb600639Cea175Cc'
         const usdc = '0x45ea5d57BA80B5e3b0Ed502e9a08d568c96278F9'
         const args = [adminAddress,
             1000,
