@@ -7,12 +7,10 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 // TODO(system): implement logic around DAO (deposit, withdraw, distribute)
 contract Investment is Initializable, AccessControl {
-    bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
-    bytes32 public constant INVESTOR_ROLE = keccak256("INVESTOR_ROLE");
-
     // User status
     address public admin;
     address public investor;
+    address public daoAddress;
 
     // Funding round
     uint256 public fundingGoal; // Total campaign target
@@ -22,7 +20,6 @@ contract Investment is Initializable, AccessControl {
     uint256 public allocatedMaxAmount; // initial size
     // no use case yet, but would be useful to show the max potential token distributed if investors fulfills the allocation
     uint256 public maxPercentageDistributed;
-    uint256 public daoTokenAllocation = 1000000000000;
 
     // User balances
     mapping(address => uint) balances;
@@ -33,17 +30,21 @@ contract Investment is Initializable, AccessControl {
     // who already invested to avoid investing twice
     mapping(address => bool) public hasInvested;
 
-    IERC20 public token;
    
-    function init(uint256 _fundingGoal, uint256 _allocatedMaxAmount, uint256 _startDate, uint256 _endDate, address _token) external initializer {
-        investor = msg.sender;
+    IERC20 public fundingToken;
+    IERC20 public daoToken;
+   
+    function init(uint256 _fundingGoal, uint256 _allocatedMaxAmount, uint256 _startDate, uint256 _endDate, address _fundingToken, address _daoToken, address _investor, address _daoAddress) external initializer {
+        investor = _investor;
         balances[investor] = investor.balance;
         fundingGoal = _fundingGoal;
         allocatedMaxAmount = _allocatedMaxAmount;
         startDate = _startDate;
         endDate = _endDate;
-        token = IERC20(_token);
+        fundingToken = IERC20(_fundingToken);
+        daoToken = IERC20(_daoToken);
         maxPercentageDistributed = (allocatedMaxAmount * 100) / fundingGoal;
+        daoAddress = _daoAddress;
     }
 
     modifier onlyAdmin() {
@@ -51,7 +52,12 @@ contract Investment is Initializable, AccessControl {
         _;
     }
 
-    function depositAllocation(uint _amount) external payable {
+    modifier onlyInvestor() {
+        require(msg.sender == investor, "Only the investor can do that");
+        _;
+    }
+
+    function depositAllocation(uint _amount) external payable onlyInvestor {
         require(balances[msg.sender] >= _amount, "Not enough tokens");
         require(!hasInvested[msg.sender], "This user already invested");
         require(userSpentAmount + _amount <= fundingGoal, "Can't invest more than the campaign goal");
@@ -63,26 +69,27 @@ contract Investment is Initializable, AccessControl {
         hasInvested[msg.sender] = true; // We know this address is eligible for rewards
         investedAmount[msg.sender] = _amount; // We know the amount invested by this address
         userSpentAmount += _amount; // The amount of token invested for this campaign
-        token.transferFrom(msg.sender, address(this), _amount);
+        fundingToken.transferFrom(msg.sender, address(this), _amount);
     }
 
     // todo : make sure dao has transfered enough tokens
-    function distributeToken(address[] memory _investors) external onlyAdmin() {
+    function distributeToken() external onlyAdmin() {
         require(block.timestamp > endDate, "The campaign is not over");
-        for (uint i = 0; i < _investors.length; i++) {
-            require(hasInvested[_investors[i]], "This user did not invest");
-            hasInvested[_investors[i]] = false;
-            uint amountToSend = (percentageDistributed[_investors[i]] * 100) / daoTokenAllocation;
-            token.transferFrom(msg.sender, _investors[i], amountToSend);
-        }
+        require(fundingGoal == fundingToken.balanceOf(address(this)));
+        require(hasInvested[investor], "This user did not invest");
+        hasInvested[investor] = false;
+        uint amountToSend = fundingToken.balanceOf(address(this));
+        uint amountToDistribute = (percentageDistributed[investor] * 100) / daoToken.balanceOf(address(this));
+        fundingToken.transfer(daoAddress, amountToSend);
+        daoToken.transferFrom(msg.sender, investor, amountToDistribute);
     }
 
-    function extendDuration() external onlyAdmin() {
-        require(block.timestamp > endDate, "The campaign is not over");
-        require(userSpentAmount < allocatedMaxAmount, "The final goal had been reached.");
+    // function extendDuration() external onlyAdmin() {
+    //     require(block.timestamp > endDate, "The campaign is not over");
+    //     require(userSpentAmount < allocatedMaxAmount, "The final goal had been reached.");
 
-        endDate += 7 days;
-        // TODO: Complete unfinished allocations in a "free for all" manner
-    }
+    //     endDate += 7 days;
+    //     // TODO: Complete unfinished allocations in a "free for all" manner
+    // }
 
 }
