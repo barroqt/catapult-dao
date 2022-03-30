@@ -19,7 +19,7 @@ contract InvestmentFactory is CloneFactory, Ownable {
     function setMasterContractAddress(address _masterContractAddress) public onlyOwner {
         masterContractAddress = _masterContractAddress;
     }
-//address _daoToken, address _investor, address _daoAddress
+
     function createDAOFunding(
         uint256 fundingGoal,
         uint256 allocatedMaxAmount,
