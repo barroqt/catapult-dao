@@ -1,5 +1,6 @@
 # dependencies
 /node_modules
+front/node_modules/
 /.pnp
 .pnp.js
 package-lock.json
@@ -29,3 +30,5 @@ yarn-error.log*
 .env
 
 .idea/
+
+.docusaurus/
