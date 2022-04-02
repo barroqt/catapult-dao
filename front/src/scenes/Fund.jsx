@@ -31,15 +31,18 @@ export default function Fund(props) {
   const {
     doParticipate,
     participation,
+    getInvest,
+    fundData,
   } = useContext(Web3Context);
 
   useEffect(() => {
     if (!isLogged) {
       setRedirctTo(true);
+    } else {
+      getInvest(id);
     }
   }, [isLogged]);
 
-  console.log({ participation });
   const render = (
     <div
       style={{
@@ -49,14 +52,14 @@ export default function Fund(props) {
         gap: "10px",
       }}
     >
-      <Link to="/">
+      <Link to="/fund">
         <Button>Back</Button>
       </Link>
       <Card
         style={styles.card}
         title={
           <>
-            📝 <Text strong>Fund Info</Text>
+            📝 <Text strong>{fundData && fundData.name}</Text>
           </>
         }
       >
@@ -66,25 +69,24 @@ export default function Fund(props) {
           flexDirection: "column",
         }}>
           <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap" }}>
-            <Text style={{ marginRight: "5px" }}>Title:</Text>
+            <Text style={{ marginRight: "5px" }}>Id:</Text>
             <Title level={4}>{id}</Title>
           </div>
           <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap" }}>
-            <Text style={{ marginRight: "5px" }}>Date:</Text>
-            <Title level={4}>2022-03-28</Title>
+            <Text style={{ marginRight: "5px" }}>Desc:</Text>
+            <Title level={4}>{fundData && fundData.desc}</Title>
+          </div>
+          <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap" }}>
+            <Text style={{ marginRight: "5px" }}>Start Date:</Text>
+            <Title level={4}>{fundData && fundData.startDate}</Title>
           </div>
           <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap" }}>
             <Text style={{ marginRight: "5px" }}>End Date:</Text>
-            <Title level={4}>2022-03-31</Title>
+            <Title level={4}>{fundData && fundData.endDate}</Title>
           </div>
           <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap" }}>
             <Text style={{ marginRight: "5px" }}>Fund:</Text>
-            {participation && <Title level={4}>5000/5000</Title>}
-            {!participation && <Title level={4}>0/5000</Title>}
-          </div>
-          <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap" }}>
-            <Text style={{ marginRight: "5px" }}>Currency:</Text>
-            <Title level={4}>USDC</Title>
+            <Title level={4}>{fundData && fundData.current + "/" + fundData.goal + " " + fundData.currency}</Title>
           </div>
         </div>
       </Card>
@@ -97,7 +99,7 @@ export default function Fund(props) {
         }
       >
        <TableInvestors
-          data={[participation]}
+          data={participation ? [participation] : []}
         />
       </Card>
       {!participation && <Button type="primary" onClick={() => doParticipate(5000)}>Participate with 5000</Button>}

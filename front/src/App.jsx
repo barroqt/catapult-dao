@@ -36,13 +36,17 @@ const styles = {
     zIndex: 1,
     width: "100%",
     background: "#fff",
+    borderBottom: "2px solid rgba(0, 0, 0, 0.06)",
+    padding: "0 10px",
+    boxShadow: "0 1px 10px rgb(151 164 175 / 10%)",
+  },
+  headerContainer: {
+    maxWidth: '1056px',
+    margin: 'auto',
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
     fontFamily: "Roboto, sans-serif",
-    borderBottom: "2px solid rgba(0, 0, 0, 0.06)",
-    padding: "0 10px",
-    boxShadow: "0 1px 10px rgb(151 164 175 / 10%)",
   },
 };
 
@@ -50,9 +54,6 @@ function App() {
   const {
       web3,
       signer,
-      initWeb3Modal,
-      createDAO,
-      investment
   } = useContext(Web3Context);
   const isLogged = (web3 && signer);
 
@@ -60,11 +61,13 @@ function App() {
     <Layout style={{ height: "100vh", overflow: "auto" }}>
       <Router>
         <Header style={styles.header}>
-          <Link to="/" style={{ display: "flex", alignItems: "center" }}>
-            <img src={logo} alt="logo" width="60" height="60" />
-            <Title level={5}>CatapultDAO</Title>
-          </Link>
-          <MenuItems isLogged={isLogged} />
+          <div style={styles.headerContainer}>
+            <Link to="/" style={{ display: "flex", alignItems: "center" }}>
+              <img src={logo} alt="logo" width="60" height="60" />
+              <Title level={5}>CatapultDAO</Title>
+            </Link>
+            <MenuItems isLogged={isLogged} />
+          </div>
         </Header>
 
         <div style={styles.content}>
@@ -88,7 +91,7 @@ function App() {
         </div>
       </Router>
       <Footer style={{ textAlign: "center" }}>
-        <Text style={{ display: "block" }}>Build at Avalanche Summit 2022</Text>
+        <Text style={{ display: "block" }}>Built at Avalanche Summit 2022</Text>
       </Footer>
     </Layout>
   );

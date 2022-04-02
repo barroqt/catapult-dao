@@ -8,6 +8,29 @@ import config from "../config.js";
 
 import InvestmentFactory from "../contracts/DAOFundingFactory.json";
 
+const dataTest = {
+    funds: [{
+            addr: '0xa7d7079b0fead91f3e65f86e8915cb59c1a4c669',
+            name: 'Fund my goal',
+            desc: 'Project to help something grow',
+            startDate: '2022-03-30',
+            endDate: '2022-04-20',
+            currency: 'USDC',
+            current: '100',
+            goal: '10000',
+        }, {
+            addr: '0xa7d7079b0fead91f3e65f86e8915cb59c1a4c670',
+            name: 'Fund my goal 2',
+            desc: 'Project to help something grow to the sky',
+            startDate: '2022-03-30',
+            endDate: '2022-04-20',
+            currency: 'USDC',
+            current: '951',
+            goal: '35000',
+        },
+    ],
+};
+
 const Web3Context = React.createContext({
     web3: null,
     signer: null,
@@ -17,16 +40,19 @@ const Web3Context = React.createContext({
     loading: false,
     initWeb3Modal: () => {},
     createDAO: () => {},
-    getInvestment: () => {},
+    getInvestments: () => {},
+    getInvest: () => {},
     doParticipate: () => {},
     participation: null,
-    investment: null
+    investment: null,
+    fundData: null,
 });
 
 export const Web3ContextProvider = (props) => {
     const [web3, setWeb3] = useState(null);
     const [signer, setSigner] = useState(null);
     const [investment, setInvestment] = useState(null);
+    const [fundData, setFundData] = useState(null);
     const [investmentDAO, setInvestmentDAO] = useState(null);
     const [participation, setParticipation] = useState(null);
     const [factoryContract, setFactoryContract] = useState(null);
@@ -124,10 +150,21 @@ export const Web3ContextProvider = (props) => {
         }
     }
 
-    const getInvestments = async (i) => {
+    const getInvestments = async () => {
         try {
-            const invest = await factoryContract.investments(i);
+            //const invest = await factoryContract.investments(i);
+            const invest = dataTest.funds;
             setInvestment(invest);
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    const getInvest = (id) => {
+        try {
+            //const invest = await factoryContract.investments(i);
+            const invest = dataTest.funds.filter(e => e.addr == id);
+            setFundData(invest ? invest[0] : null);
         } catch (e) {
             console.log(e)
         }
@@ -136,7 +173,6 @@ export const Web3ContextProvider = (props) => {
     const createDAO = async (data) => {
         try {
             setLoadingDAO(true);
-            console.log({ data });
             await factoryContract.createDAOFunding(10);
         } catch (e) {
             console.log(e);
@@ -162,7 +198,10 @@ export const Web3ContextProvider = (props) => {
                 createDAO,
                 investment,
                 participation,
-                doParticipate
+                doParticipate,
+                getInvestments,
+                getInvest,
+                fundData,
             }}>
             {props.children}
         </Web3Context.Provider>

@@ -35,9 +35,10 @@ const CreateFunding = (props) => {
     }
   }, [isLogged]);
 
-  const onFormLayoutChange = ({ name, date, currency, goal }) => {
+  const onFormLayoutChange = ({ name, date, endDate, currency, goal }) => {
     setComponentName(name);
     setComponentDate(date);
+    setComponentEndDate(endDate);
     setComponentCurrency(currency);
     setComponentGoal(goal);
   };
@@ -84,7 +85,7 @@ const CreateFunding = (props) => {
           initialValues={{
             name: componentName,
             date: componentDate,
-            endDate: componentEndDate,
+            enddate: componentEndDate,
             currency: componentCurrency,
             goal: componentGoal,
           }}
@@ -121,7 +122,7 @@ const CreateFunding = (props) => {
           </Form.Item>
           <Form.Item
             rules={[{ required: true, message: "Please input a end date." }]}
-            name="endDate"
+            name="enddate"
             label="Funding Period end"
           >
             <DatePicker />

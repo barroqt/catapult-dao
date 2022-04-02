@@ -6,6 +6,12 @@ import Web3Context from "../store/web3Context";
 const { Text } = Typography;
 
 const styles = {
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    width: "80%",
+    gap: "10px",
+  },
   title: {
     fontSize: "20px",
     fontWeight: "700",
@@ -17,6 +23,11 @@ const styles = {
     boxShadow: "0 0.5rem 1.2rem rgb(189 197 209 / 20%)",
     border: "1px solid #e7eaf3",
     borderRadius: "0.5rem",
+  },
+  fundCard: {
+    display: "flex",
+    flexDirection: "row",
+    margin: 2,
   },
   timeline: {
     marginBottom: "-45px",
@@ -38,12 +49,7 @@ export default function FundContainer(props) {
 
   const render = (
     <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        width: "80%",
-        gap: "10px",
-      }}
+      style={styles.container}
     >
       <Card
         style={styles.card}
@@ -58,12 +64,14 @@ export default function FundContainer(props) {
           flexWrap: "wrap",
           flexDirection: "column",
         }}>
-          {investment && (
-            <Link to={"/fund/" + investment}>
-              <Card type="inner" title="Funding 1">
-                {investment}
-              </Card>
-            </Link>
+          {investment && investment.map((elt, i) => (
+              <Link key={i} to={"/fund/" + elt.addr}>
+                <Card type="inner" style={styles.fundCard} title={elt.name}>
+                  <Text>{elt.desc}: </Text>
+                  <Text>{elt.current} / {elt.goal}</Text>
+                </Card>
+              </Link>
+            )
           )}
           {!investment && <div>Nothing to display</div>}
 

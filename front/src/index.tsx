@@ -6,11 +6,11 @@ import reportWebVitals from './reportWebVitals';
 import {Web3ContextProvider} from "./store/web3Context";
 
 ReactDOM.render(
-  <React.StrictMode>
+  <div>
       <Web3ContextProvider>
             <App />
       </Web3ContextProvider>
-  </React.StrictMode>,
+  </div>,
   document.getElementById('root')
 );
 
