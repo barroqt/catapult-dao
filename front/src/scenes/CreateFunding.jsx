@@ -35,10 +35,10 @@ const CreateFunding = (props) => {
     }
   }, [isLogged]);
 
-  const onFormLayoutChange = ({ name, date, endDate, currency, goal }) => {
+  const onFormLayoutChange = ({ name, date, enddate, currency, goal }) => {
     setComponentName(name);
     setComponentDate(date);
-    setComponentEndDate(endDate);
+    setComponentEndDate(enddate);
     setComponentCurrency(currency);
     setComponentGoal(goal);
   };
@@ -92,7 +92,7 @@ const CreateFunding = (props) => {
           onValuesChange={onFormLayoutChange}
           name={componentName}
           date={componentDate}
-          endDate={componentEndDate}
+          enddate={componentEndDate}
           currency={componentCurrency}
           goal={componentGoal}
           onFinish={onFinish}

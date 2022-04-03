@@ -1,7 +1,8 @@
-import { Card, Button, Typography } from "antd";
 import React, { useState, useEffect, useContext } from "react";
 import { Redirect, Link, useParams } from "react-router-dom";
 import TableInvestors from "../components/TableInvestors";
+import ModalParticipate from "../components/ModalParticipate";
+import { Card, Button, Typography } from "antd";
 
 import Web3Context from "../store/web3Context";
 const { Text, Title } = Typography;
@@ -26,22 +27,47 @@ const styles = {
 
 export default function Fund(props) {
   const [redirctTo, setRedirctTo] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const { id } = useParams();
   const isLogged = props.isLogged;
   const {
     doParticipate,
-    participation,
-    getInvest,
+    getFund,
     fundData,
+    account,
   } = useContext(Web3Context);
 
   useEffect(() => {
     if (!isLogged) {
       setRedirctTo(true);
-    } else {
-      getInvest(id);
+    } else if (id && getFund) {
+      getFund(id);
     }
   }, [isLogged]);
+
+  const isOwner = (owner) => {
+    if (owner == account.address)
+      return true;
+    return false;
+  }
+
+  const alreadyParticipate = (partipants) => {
+    if (partipants.filter(e => e.address == account.address).length > 0)
+      return true;
+    return false;
+  }
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
 
   const render = (
     <div
@@ -77,6 +103,10 @@ export default function Fund(props) {
             <Title level={4}>{fundData && fundData.desc}</Title>
           </div>
           <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap" }}>
+            <Text style={{ marginRight: "5px" }}>Owner:</Text>
+            <Title level={4}>{fundData && fundData.owner && isOwner(fundData.owner) ? 'You are the owner' : fundData && fundData.owner}</Title>
+          </div>
+          <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap" }}>
             <Text style={{ marginRight: "5px" }}>Start Date:</Text>
             <Title level={4}>{fundData && fundData.startDate}</Title>
           </div>
@@ -90,6 +120,14 @@ export default function Fund(props) {
           </div>
         </div>
       </Card>
+      {fundData 
+        && fundData.owner
+        && !isOwner(fundData.owner) 
+        && <Button type="primary" onClick={showModal}>Participate</Button>}
+      {fundData 
+        && fundData.owner
+        && isOwner(fundData.owner) 
+        && <Button>You cannot participate in your own funding.</Button>}
       <Card
         style={styles.card}
         title={
@@ -99,10 +137,16 @@ export default function Fund(props) {
         }
       >
        <TableInvestors
-          data={participation ? [participation] : []}
+          data={fundData && fundData.participants ? fundData.participants : []}
         />
       </Card>
-      {!participation && <Button type="primary" onClick={() => doParticipate(5000)}>Participate with 5000</Button>}
+      {fundData 
+        && <ModalParticipate
+          title={"Partipate to" + fundData.name}
+          isModalVisible={isModalVisible}
+          onOk={handleOk}
+          onCancel={handleCancel}
+        />}
     </div>
   );
 

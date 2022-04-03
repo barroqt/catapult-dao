@@ -38,7 +38,7 @@ export default function FundContainer(props) {
   const [redirctTo, setRedirctTo] = useState(false);
   const isLogged = props.isLogged;
   const {
-      investment,
+      fundings,
   } = useContext(Web3Context);
 
   useEffect(() => {
@@ -64,7 +64,7 @@ export default function FundContainer(props) {
           flexWrap: "wrap",
           flexDirection: "column",
         }}>
-          {investment && investment.map((elt, i) => (
+          {fundings && fundings.map((elt, i) => (
               <Link key={i} to={"/fund/" + elt.addr}>
                 <Card type="inner" style={styles.fundCard} title={elt.name}>
                   <Text>{elt.desc}: </Text>
@@ -73,7 +73,7 @@ export default function FundContainer(props) {
               </Link>
             )
           )}
-          {!investment && <div>Nothing to display</div>}
+          {!fundings && <div>Nothing to display</div>}
 
         </div>
       </Card>
