@@ -77,7 +77,6 @@ contract Investment is Initializable, AccessControl {
         require(block.timestamp > endDate, "The campaign is not over");
         require(fundingGoal == fundingToken.balanceOf(address(this)));
         require(hasInvested[investor], "This user did not invest");
-        
         hasInvested[investor] = false;
         uint amountToSend = fundingToken.balanceOf(address(this));
         uint amountToDistribute = (percentageDistributed[investor] * 100) / daoToken.balanceOf(address(this));
