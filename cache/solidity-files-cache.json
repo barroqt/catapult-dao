@@ -37,7 +37,7 @@
       ]
     },
     "/Users/thomas/dev/avalanche/catapult-dao/contracts/InvestmentFactory.sol": {
-      "lastModificationDate": 1648370439387,
+      "lastModificationDate": 1648844539612,
       "contentHash": "bcbc53ac0b90f36e5326f49c56bed0f3",
       "sourceName": "contracts/InvestmentFactory.sol",
       "solcConfig": {
@@ -76,8 +76,8 @@
       ]
     },
     "/Users/thomas/dev/avalanche/catapult-dao/contracts/Investment.sol": {
-      "lastModificationDate": 1648370504709,
-      "contentHash": "79062d366541e36af089edc4df12b433",
+      "lastModificationDate": 1648988299499,
+      "contentHash": "933f462d02bdc83d75ed5df42a0d963c",
       "sourceName": "contracts/Investment.sol",
       "solcConfig": {
         "version": "0.8.2",
