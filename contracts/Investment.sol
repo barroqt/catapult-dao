@@ -63,8 +63,8 @@ contract Investment is Initializable, AccessControl {
         return uint(keccak256(abi.encodePacked(block.timestamp)));
     }
 
-    function createCampaign(bytes32 _name, bytes32 _description, uint256 _fundingGoal, uint256 _startDate, uint256 _endDate, address _daoToken, address _daoAddress) external {
-        uint id = generateRandomId();
+    function createCampaign(uint id, bytes32 _name, bytes32 _description, uint256 _fundingGoal, uint256 _startDate, uint256 _endDate, address _daoToken, address _daoAddress) external {
+        // uint id = generateRandomId();
         address[] memory initAddressList;
 
         CampaignInfo memory newCampaign = CampaignInfo({
