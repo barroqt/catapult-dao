@@ -30,7 +30,6 @@ contract Investment is Initializable, AccessControl {
     // who already invested to avoid investing twice
     mapping(address => bool) public hasInvested;
 
-   
     IERC20 public fundingToken;
     IERC20 public daoToken;
    
@@ -58,6 +57,7 @@ contract Investment is Initializable, AccessControl {
     }
 
     function depositAllocation(uint _amount) external payable onlyInvestor {
+        require(_amount > 0, "Can't invest 0 token");
         require(balances[msg.sender] >= _amount, "Not enough tokens");
         require(!hasInvested[msg.sender], "This user already invested");
         require(userSpentAmount + _amount <= fundingGoal, "Can't invest more than the campaign goal");
