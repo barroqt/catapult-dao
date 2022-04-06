@@ -12,8 +12,8 @@ contract Investment is Initializable, AccessControl {
 
     // campaign info
     struct CampaignInfo {
-        bytes32 _name;
-        bytes32 _description;
+        string _name;
+        string _description;
 
         uint256 fundingGoal; // Total campaign target
         uint256 startDate; // Funding campaign start date
@@ -38,8 +38,8 @@ contract Investment is Initializable, AccessControl {
     IERC20 public fundingToken;
    
     function init(
-        bytes32 _name,
-        bytes32 _description,
+        string memory _name,
+        string memory _description,
         uint256 _fundingGoal,
         uint256 _startDate,
         uint256 _endDate,

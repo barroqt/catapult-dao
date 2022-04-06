@@ -21,8 +21,8 @@ contract InvestmentFactory is CloneFactory, Ownable {
     }
 
     function createDAOFunding(
-            bytes32 name,
-            bytes32 description,
+            string memory name,
+            string memory description,
             uint256 fundingGoal,
             uint256 startDate,
             uint256 endDate,
