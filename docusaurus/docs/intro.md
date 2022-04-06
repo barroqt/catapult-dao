@@ -14,11 +14,12 @@ Get started by **installing the dependencies** to be able to launch the project.
 
 - [Node.js](https://nodejs.org/en/download/) version 16 or above:
   - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
+- [Hardhat-shorthand](https://hardhat.org/guides/shorthand.html) (npm i -g hardhat-shorthand)
 
 ## Start the Catapult
 
 Here is the way to launch the project.
-You will need two instance.
+You will need two instances.
 One for the backend, propulsed by hardhat and running on Avalanche Fuji Network.
 The other one is a Dapp built with React.
 
@@ -64,6 +65,21 @@ cd catapult-dao
 export FUJI_PRIVATE_KEY="YOUR_FUJI_KEY"
 npx hardhat run --network local scripts/deploy.ts
 ```
+The deployement script will automatically copy and paste artifacts from contracts built into the front-end repository.
 
-Copy the address of the contract deployed in the Front, on the FACTORY_ADDRESS in PROD Object from catapultDAO-frontend/src/config.js.
-Copy the json of the contract(s) builded in catapult-dao/artifacts to catapultDAO-frontend/src/contracts
+
+## Connect with Fuji Testnet
+
+Add the network to your wallet
+
+    Network Name: Avalanche FUJI C-Chain
+    New RPC URL: https://api.avax-test.network/ext/bc/C/rpc
+    Chain ID: 43113
+    Symbol: AVAX
+    Explorer: https://testnet.snowtrace.io/
+
+Use a faucet to add some AVAX
+    
+    https://faucets.chain.link/fuji
+
+    https://faucet.avax-test.network/
