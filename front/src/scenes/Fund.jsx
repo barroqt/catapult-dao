@@ -3,6 +3,7 @@ import { Redirect, Link, useParams } from "react-router-dom";
 import TableInvestors from "../components/TableInvestors";
 import ModalParticipate from "../components/ModalParticipate";
 import { Card, Button, Typography } from "antd";
+import { displayDate } from '../utils';
 
 import Web3Context from "../store/web3Context";
 const { Text, Title } = Typography;
@@ -32,7 +33,7 @@ export default function Fund(props) {
   const isLogged = props.isLogged;
   const {
     doParticipate,
-    getFund,
+    getCampaign,
     fundData,
     account,
   } = useContext(Web3Context);
@@ -40,8 +41,8 @@ export default function Fund(props) {
   useEffect(() => {
     if (!isLogged) {
       setRedirctTo(true);
-    } else if (id && getFund) {
-      getFund(id);
+    } else if (id && getCampaign) {
+      getCampaign(id, true);
     }
   }, [isLogged]);
 
@@ -108,15 +109,15 @@ export default function Fund(props) {
           </div>
           <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap" }}>
             <Text style={{ marginRight: "5px" }}>Start Date:</Text>
-            <Title level={4}>{fundData && fundData.startDate}</Title>
+            <Title level={4}>{fundData && displayDate(fundData.startDate)}</Title>
           </div>
           <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap" }}>
             <Text style={{ marginRight: "5px" }}>End Date:</Text>
-            <Title level={4}>{fundData && fundData.endDate}</Title>
+            <Title level={4}>{fundData && displayDate(fundData.endDate)}</Title>
           </div>
           <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap" }}>
             <Text style={{ marginRight: "5px" }}>Fund:</Text>
-            <Title level={4}>{fundData && fundData.current + "/" + fundData.goal + " " + fundData.currency}</Title>
+            <Title level={4}>{fundData && fundData.current + "/" + fundData.goal}</Title>
           </div>
         </div>
       </Card>

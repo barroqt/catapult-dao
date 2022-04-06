@@ -38,7 +38,7 @@ export default function FundContainer(props) {
   const [redirctTo, setRedirctTo] = useState(false);
   const isLogged = props.isLogged;
   const {
-      fundings,
+    fundings,
   } = useContext(Web3Context);
 
   useEffect(() => {
@@ -46,6 +46,7 @@ export default function FundContainer(props) {
       setRedirctTo(true);
     }
   }, [isLogged]);
+  const now = parseInt(new Date().getTime());
 
   const render = (
     <div
@@ -64,10 +65,10 @@ export default function FundContainer(props) {
           flexWrap: "wrap",
           flexDirection: "column",
         }}>
-          {fundings && fundings.map((elt, i) => (
+          {fundings && fundings.filter(elt => elt.endDate > now).map((elt, i) => (
               <Link key={i} to={"/fund/" + elt.addr}>
                 <Card type="inner" style={styles.fundCard} title={elt.name}>
-                  <Text>{elt.desc}: </Text>
+                  <Text>{elt.desc ? elt.desc : 'No description'}: </Text>
                   <Text>{elt.current} / {elt.goal}</Text>
                 </Card>
               </Link>
@@ -85,7 +86,16 @@ export default function FundContainer(props) {
           </>
         }
       >
-        <div>Nothing to display</div>
+        {fundings && fundings.filter(elt => elt.endDate <= now).map((elt, i) => (
+            <Link key={i} to={"/fund/" + elt.addr}>
+              <Card type="inner" style={styles.fundCard} title={elt.name}>
+                <Text>{elt.desc ? elt.desc : 'No description'}: </Text>
+                <Text>{parseInt(elt.current)} / {elt.goal}</Text>
+              </Card>
+            </Link>
+          )
+        )}
+        {!fundings && <div>Nothing to display</div>}
         
       </Card>
     </div>

@@ -21,12 +21,13 @@ const CreateFunding = (props) => {
   const [componentCurrency, setComponentCurrency] = useState("USDC");
   const [componentGoal, setComponentGoal] = useState(10000);
   const [loading, setLoading] = useState(false);
-  const [builded, setBuilded] = useState(false);
   const isLogged = props.isLogged;
   const formRef = useRef();
   const {
     createDAO,
     loadingDAO,
+    successDAO,
+    errorDAO,
   } = useContext(Web3Context);
 
   useEffect(() => {
@@ -46,13 +47,12 @@ const CreateFunding = (props) => {
   const onFinish = async (values) => {
     setLoading(true);
     await createDAO({
-      name: componentName,
-      date: componentDate,
-      endDate: componentEndDate,
-      currency: componentCurrency,
-      goal: componentGoal,
+      name: values.name,
+      date: new Date(values.date._d).getTime(),
+      enddate: new Date(values.enddate._d).getTime(),
+      //currency: values.currency,
+      fundingGoal: values.goal,
     });
-    setBuilded(true);
     if (formRef.current)
       formRef.current.resetFields();
   };
@@ -71,7 +71,8 @@ const CreateFunding = (props) => {
   const render = (
     <div>
       {loadingDAO && <Title level={5}>Loading...</Title>}
-      {builded && <Title style={{ textAlign: 'center', color: '#2bd22b' }} level={4}>Funding builded!</Title>}
+      {!loadingDAO && errorDAO && <Title style={{ textAlign: 'center', color: 'tomato' }} level={4}>Fail!</Title>}
+      {!loadingDAO && successDAO  && <Title style={{ textAlign: 'center', color: '#2bd22b' }} level={4}>Transaction sent!</Title>}
       <Card title="Create a Funding" bordered={false} style={{ width: 600 }}>
         <Form
           ref={formRef}

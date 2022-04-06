@@ -1,12 +1,16 @@
 import React, {useEffect, useState} from "react";
-import {ethers} from "ethers";
+import { ethers } from "ethers";
 import Web3Modal from "web3modal";
 import CoinbaseWalletSDK from "@coinbase/wallet-sdk";
 import WalletConnect from "@walletconnect/web3-provider";
 
 import config from "../config.js";
 
-import InvestmentFactory from "../contracts/DAOFundingFactory.json";
+import InvestmentFactoryArtifact from "../contracts/InvestmentFactory.json";
+import InvestmentFactoryAddress from "../contracts/InvestmentFactory_address.json";
+
+import InvestmentArtifact from "../contracts/Investment.json";
+import InvestmentAddress from "../contracts/Investment_address.json";
 
 const dataTest = {
     funds: [{
@@ -48,12 +52,17 @@ const Web3Context = React.createContext({
     account: null,
     loading: false,
     factoryContract: null,
+    
+    loadingDAO: false,
+    successDAO: false,
+    errorDAO: false,
+    createDAO: () => {},
+    
     approve: () => {},
     initWeb3Modal: () => {},
-    createDAO: () => {},
     doParticipate: () => {},
 
-    getFund: () => {},
+    getCampaign: () => {},
     getFundings: () => {},
     fundings: null,
     fundData: null,
@@ -65,32 +74,34 @@ export const Web3ContextProvider = (props) => {
     const [account, setAccount] = useState(null);
     const [loading, setLoading] = useState(false);
     const [loadingDAO, setLoadingDAO] = useState(false);
+    const [successDAO, setSuccessDAO] = useState(false);
+    const [errorDAO, setErrorDAO] = useState(false);
     const [fundings, setFundings] = useState(null);
     const [fundData, setFundData] = useState(null);
+
     const [factoryContract, setFactoryContract] = useState(null);
 
     useEffect(() => {
         const initData = async () => {
-            await getFundings();
+            const count = await factoryContract.sizeInvestment();
+            console.log({ count: parseInt(count.toString()) });
+            if (parseInt(count.toString()) > 0) {
+                await getFundings();
+            }
         }
-        factoryContract && initData();
+        factoryContract && signer && initData();
 
     }, [factoryContract])
 
     useEffect(() => {
         const initUrlWeb3 = async () => {
+            console.log('initUrlWeb3');
             setLoading(true)
             try {
                 const provider = new ethers.providers.JsonRpcProvider(config.PROD.RPC);
                 setWeb3(provider);
                 console.log("No web3 instance injected, using Local web3.");
-
-                const investmentFactory = new ethers.Contract(
-                    config.PROD.FACTORY_ADDRESS,
-                    InvestmentFactory.abi,
-                    provider);
-
-                setFactoryContract(investmentFactory);
+                initContracts(provider);
             } catch (e) {
                 console.log(e);
             } finally {
@@ -101,7 +112,24 @@ export const Web3ContextProvider = (props) => {
         !web3 && initUrlWeb3()
     }, [web3]);
 
+    useEffect(() => {
+       window.ethereum.on('accountsChanged', accounts => console.log({ accounts }))
+       window.ethereum.on('chainChanged', () => window.location.reload())
+       window.ethereum.on('connect', (connectInfo) => { console.log({connectInfo}); })
+    }, [])
+
+    const initContracts = (provider) => {
+        const signer = provider.getSigner();
+        const investmentFactory = new ethers.Contract(
+            InvestmentFactoryAddress.Contract,
+            InvestmentFactoryArtifact.abi,
+            signer);
+
+        setFactoryContract(investmentFactory);
+    }
+
     const initWeb3Modal = async () => {
+        console.log('initWeb3Modal');
         try {
             setLoading(true)
             const providerOptions = {
@@ -126,8 +154,8 @@ export const Web3ContextProvider = (props) => {
             });
 
             const instance = await web3Modal.connect();
-
             const provider = new ethers.providers.Web3Provider(instance);
+            const network = await provider.getNetwork();
             const signer = provider.getSigner();
             const balance = await signer.getBalance();
             const address = await signer.getAddress();
@@ -135,19 +163,14 @@ export const Web3ContextProvider = (props) => {
             const newAcc = {
                 balance: ethers.utils.formatEther(balance._hex),
                 address,
-                txCount
+                txCount,
+                network,
             };
-
-            const investmentFactory = new ethers.Contract(
-                config.PROD.FACTORY_ADDRESS,
-                InvestmentFactory.abi,
-                signer);
-
+            console.log(newAcc);
             setWeb3(provider);
             setSigner(signer);
             setAccount(newAcc);
-            setFactoryContract(investmentFactory);
-
+            initContracts(provider);
         } catch (e) {
             console.log(e);
         } finally {
@@ -157,44 +180,77 @@ export const Web3ContextProvider = (props) => {
 
     const doParticipate = async (/*amount*/) => {
         try {
-            await factoryContract.createDAOFunding(10);
-            //const addr = await signer.getAddress();
-            /*setParticipation({
+            //await factoryContract.createDAOFunding(10);
+            /*const addr = await signer.getAddress();
+            setParticipation({
                 key: 1,
                 address: addr,
                 amount
             });*/
+            console.log('doParticipate');
         } catch (e) {
             console.log(e)
         }
     }
 
     const getFundings = async () => {
-        try {
-            //const funds = await factoryContract.investments(i);
-            const funds = dataTest.funds;
-            setFundings(funds);
-        } catch (e) {
-            console.log(e)
+        const campaigns = [];
+        const count = await factoryContract.sizeInvestment();
+        for (let i = 0; i < count; i++) {
+            const contract = await factoryContract.investments(i);
+            const campaign = await getCampaign(contract);
+            campaigns.push(campaign);
         }
+        console.log({ campaigns });
+        setFundings(campaigns);
     }
 
-    const getFund = (id) => {
-        try {
-            //const invest = await factoryContract.investments(i);
-            const invest = dataTest.funds.filter(e => e.addr == id);
-            setFundData(invest ? invest[0] : null);
-        } catch (e) {
-            console.log(e)
-        }
+    const getCampaign = async (contract, save=false) => {
+        const investment = new ethers.Contract(
+            contract,
+            InvestmentArtifact.abi,
+            signer);
+        const owner = await investment.admin();
+        const fundingToken = await investment.fundingToken();
+        const result = await investment.campaign();
+        const campaign = {
+            addr: contract,
+            owner: owner,
+            name: result._name,
+            desc: result._description,
+            startDate: result.startDate.toNumber(),
+            endDate: result.endDate.toNumber(),
+            currency: fundingToken,
+            current: result.totalInvestedAmount.toNumber(),
+            goal: result.fundingGoal.toNumber(),
+            participants: result.investors,
+        };
+
+        if (save) setFundData(campaign)
+        return campaign;
     }
 
-    const createDAO = async (/*data*/) => {
+    const createDAO = async (data) => {
         try {
+            const count = await factoryContract.sizeInvestment();
+            setSuccessDAO(false);
+            setErrorDAO(false);
             setLoadingDAO(true);
-            await factoryContract.createDAOFunding(10);
+            
+            const create = await factoryContract.createDAOFunding(
+                data.name, // name
+                '', // desc
+                data.fundingGoal, // fundingGoal
+                data.date, // startDate
+                data.enddate, // endDate
+                "0xA048B6a5c1be4b81d99C3Fd993c98783adC2eF70", // daoToken (avax fuji)
+                "0x70997970C51812dc3A010C7d01b50e0d17dc79C8", // daoAddress addr
+                "0xA048B6a5c1be4b81d99C3Fd993c98783adC2eF70", // fundingToken (avax fuji)
+            );
+            setSuccessDAO(true);
         } catch (e) {
             console.log(e);
+            setErrorDAO(true);
         }
         setLoadingDAO(false);
     }
@@ -208,16 +264,17 @@ export const Web3ContextProvider = (props) => {
             value={{
                 web3,
                 signer,
-                factoryContract,
                 loading,
                 loadingDAO,
+                successDAO,
+                errorDAO,
+                createDAO,
                 approve,
                 initWeb3Modal,
-                createDAO,
                 fundings,
                 doParticipate,
                 getFundings,
-                getFund,
+                getCampaign,
                 fundData,
                 account,
             }}>
