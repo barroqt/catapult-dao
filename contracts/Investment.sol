@@ -47,6 +47,7 @@ contract Investment is Initializable, AccessControl {
         address _daoAddress,
         address _fundingToken
     ) external initializer {
+        admin = msg.sender;
         address[] memory initAddressList;
 
         campaign = CampaignInfo({
@@ -57,7 +58,7 @@ contract Investment is Initializable, AccessControl {
             endDate: _endDate,
             daoToken: IERC20(_daoToken),
             totalInvestedAmount: 0,
-            daoAddress: _daoAddress, // Needed if we are sending funds to the DAO
+            daoAddress: _daoAddress,
             investors: initAddressList
         });
         fundingToken = IERC20(_fundingToken);
@@ -68,13 +69,13 @@ contract Investment is Initializable, AccessControl {
         _;
     }
 
-    modifier onlyInvestor() {
-        require(msg.sender == investor, "Only the investor can do that");
-        _;
-    }
+    // modifier onlyInvestor() {
+    //     require(msg.sender == investor, "Only the investor can do that");
+    //     _;
+    // }
 
-    function depositAllocation(uint _amount) external payable onlyInvestor {
-        UserInfo storage user = getUserInfo[msg.sender];
+    function depositAllocation(uint _amount) external payable {
+        UserInfo memory user = getUserInfo[msg.sender];
         uint investorIdx = campaign.investors.length;
 
         require(_amount > 0, "Can't invest 0 token");
@@ -94,17 +95,29 @@ contract Investment is Initializable, AccessControl {
         fundingToken.transferFrom(msg.sender, address(this), _amount); // Deposit in the smart contract
     }
 
-    // todo : make sure dao has transfered enough tokens
-    function distributeToken() external onlyAdmin() {
-        UserInfo storage user = getUserInfo[investor];
+    function amountToDistribute(uint256 _investedAmount) internal view returns(uint) {
+        uint _percentageDistributed = (_investedAmount * 100) / campaign.fundingGoal; // % received as the reward is calculated after the campaign ends
+        uint _amountToDistribute = (_percentageDistributed * 100) / campaign.daoToken.balanceOf(address(this));
+        return _amountToDistribute;
+    }
 
+    // todo : make sure dao has transfered enough tokens
+    // Admin sends the DAO token to the investors
+    function distributeToken() external onlyAdmin() {
         require(block.timestamp > campaign.endDate, "The campaign is not over");
         require(campaign.fundingGoal == fundingToken.balanceOf(address(this)));
-        require(user.hasInvested, "This user did not invest");
 
-        user.percentageDistributed = (user.investedAmount * 100) / campaign.fundingGoal; // % received as the reward is calculated after the campaign ends
-        uint amountToDistribute = (user.percentageDistributed * 100) / campaign.daoToken.balanceOf(address(this));
-        campaign.daoToken.transferFrom(msg.sender, investor, amountToDistribute); // Admin sends the DAO token to the investors
+        // Loops through everyone that has invested in this campaign
+        for (uint i = 0; i < campaign.investors.length; i++) {
+            address _currentInvestor = campaign.investors[i];
+            UserInfo memory _investorInfo = getUserInfo[_currentInvestor];
+
+            if (_investorInfo.hasInvested) {
+                uint _amountToDistribute = amountToDistribute(_investorInfo.investedAmount);
+                
+                campaign.daoToken.transferFrom(address(this), _currentInvestor, _amountToDistribute);
+            }
+        }
     }
 
     function extendDuration() external onlyAdmin() {
