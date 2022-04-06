@@ -24,7 +24,7 @@ contract Investment is Initializable, AccessControl {
         address daoAddress; // external DAO contract
         address[] investors; // make a list of all the investors for the campaign
     }
-    CampaignInfo campaign;
+    CampaignInfo public campaign;
 
     // User info
     struct UserInfo {
