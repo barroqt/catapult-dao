@@ -38,6 +38,7 @@ contract Investment is Initializable, AccessControl {
     IERC20 public fundingToken;
    
     function init(
+        address _admin,
         string memory _name,
         string memory _description,
         uint256 _fundingGoal,
@@ -47,7 +48,7 @@ contract Investment is Initializable, AccessControl {
         address _daoAddress,
         address _fundingToken
     ) external initializer {
-        admin = msg.sender;
+        admin = _admin;
         address[] memory initAddressList;
 
         campaign = CampaignInfo({
