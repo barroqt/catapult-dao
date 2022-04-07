@@ -29,9 +29,7 @@ contract Investment is Initializable, AccessControl {
     // User info
     struct UserInfo {
         uint256 investedAmount; // Amount of funding tokens invested by user
-        uint256 percentageDistributed; // Percentage of the total reward received when campaign ends
         bool hasInvested; // who already invested to avoid investing twice
-        uint balance;
     }
     mapping(address => UserInfo) public getUserInfo;
 
@@ -80,12 +78,8 @@ contract Investment is Initializable, AccessControl {
         uint investorIdx = campaign.investors.length;
 
         require(_amount > 0, "Can't invest 0 token");
-        require(user.balance >= _amount, "Not enough tokens");
+        require(msg.sender.balance >= _amount, "Not enough tokens");
         require(!user.hasInvested, "This user already invested");
-        require(
-            campaign.totalInvestedAmount + _amount <= campaign.fundingGoal,
-            "Can't invest more than the campaign goal"
-        );
         require(block.timestamp >= campaign.startDate, "The campaign has not started yet");
         require(block.timestamp < campaign.endDate, "The campaign is over");
 
