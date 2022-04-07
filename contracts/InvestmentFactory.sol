@@ -31,8 +31,9 @@ contract InvestmentFactory is CloneFactory, Ownable {
             address fundingToken
         ) public onlyOwner {
         address clone = createClone(masterContractAddress);
+        address admin = msg.sender;
         Investment(clone).init(
-            name,description,fundingGoal,startDate,endDate,daoToken,daoAddress,fundingToken
+            admin,name,description,fundingGoal,startDate,endDate,daoToken,daoAddress,fundingToken
         );
         investments.push(Investment(clone));
         emit InvestmentCreated(clone);
