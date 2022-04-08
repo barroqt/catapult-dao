@@ -5,15 +5,16 @@ describe('InvestmentFactory', function () {
     let adminAddress, owner, investor1, investor2, investors; // roles
     let FundingToken, fundingToken, DaoToken, daoToken; // tokens
     let args; // test params
+    let investmentDeployed, investmentFactoryDeployed;
 
     beforeEach(async function () {
         [owner, investor1, investor2, ...investors] = await ethers.getSigners();
 
-        this.Investment = await ethers.getContractFactory("Investment", owner);
-        this.investment = await this.Investment.deploy();
+        const investment = await ethers.getContractFactory("Investment", owner);
+        investmentDeployed = await investment.deploy();
 
-        this.InvestmentFactory = await ethers.getContractFactory("InvestmentFactory", owner);
-        this.investmentFactory = await this.InvestmentFactory.deploy(this.investment.address)
+        const investmentFactory = await ethers.getContractFactory("InvestmentFactory", owner);
+        investmentFactoryDeployed = await investmentFactory.deploy(investmentDeployed.address)
 
         FundingToken = await ethers.getContractFactory('USDC');
         fundingToken = await FundingToken.deploy(5000 * 10 ** 6);
@@ -48,23 +49,31 @@ describe('InvestmentFactory', function () {
     //////////////////////////////
     describe("DAOFundingFactory", function () {
         it('has the Investment address', async function () {
-            expect(await this.investmentFactory.masterContractAddress())
-                .to.eq(this.investment.address);
+            expect(await investmentFactoryDeployed.masterContractAddress())
+                .to.eq(investmentDeployed.address);
+        });
+
+        it('can create an Investment', async function () {
+            await investmentFactoryDeployed.createDAOFunding(...args.slice(1));
+            const investmentChildAddress = investmentFactoryDeployed.investments(0);
+            const investmentChildContract = investmentDeployed.attach(investmentChildAddress);
+            expect(await investmentChildContract.admin()).to.eq(adminAddress);
         });
 
         it('can create Investment clones', async function () {
+            console.log({ args });
             for (let i = 0; i < 10; i++) {
-                await this.investmentFactory.createDAOFunding(...args);
-                const investmentChildAddress = this.investmentFactory.investments(i);
-                const investmentChildContract = this.investment.attach(investmentChildAddress);
+                await investmentFactoryDeployed.createDAOFunding(...args);
+                const investmentChildAddress = investmentFactoryDeployed.investments(i);
+                const investmentChildContract = investmentDeployed.attach(investmentChildAddress);
                 expect(await investmentChildContract.admin()).to.eq(adminAddress);
             }
         });
 
         it('emits the InvestmentCreated event', async function () {
-            await expect(this.investmentFactory.createDAOFunding(...args)).to
-                .emit(this.investmentFactory, 'InvestmentCreated')
-                .withArgs(await this.investmentFactory.investments(0));
+            await expect(investmentFactoryDeployed.createDAOFunding(...args)).to
+                .emit(investmentFactoryDeployed, 'InvestmentCreated')
+                .withArgs(await investmentFactoryDeployed.investments(0));
         });
 
     });
@@ -78,9 +87,9 @@ describe('InvestmentFactory', function () {
         });
 
         it('should fail if investor does not have enough tokens', async () => {
-            await this.investmentFactory.createDAOFunding(...args);
-            const investmentChildAddress = this.investmentFactory.investments(0);
-            const investmentChildContract = this.investment.attach(investmentChildAddress);
+            await investmentFactoryDeployed.createDAOFunding(...args);
+            const investmentChildAddress = investmentFactoryDeployed.investments(0);
+            const investmentChildContract = investmentDeployed.attach(investmentChildAddress);
             await fundingToken.transfer(investor1.address, 50);
             const investorBalance = await fundingToken.balanceOf(investor1.address);
             expect(investorBalance).to.equal(50);
