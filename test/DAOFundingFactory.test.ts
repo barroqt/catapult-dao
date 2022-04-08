@@ -2,28 +2,23 @@ import { expect } from 'chai';
 import { ethers } from 'hardhat';
 
 describe('InvestmentFactory', function () {
-    let adminAddress, owner, investor1, investor2; // roles
+    let adminAddress, owner, investor1, investor2, investors; // roles
     let FundingToken, fundingToken, DaoToken, daoToken; // tokens
     let args; // test params
 
     beforeEach(async function () {
-        [owner, investor1, investor2] = await ethers.getSigners();
-        console.log("=== owner address: ", owner.address);
+        [owner, investor1, investor2, ...investors] = await ethers.getSigners();
 
         this.Investment = await ethers.getContractFactory("Investment", owner);
         this.investment = await this.Investment.deploy();
-        console.log("=== Investment contract address: ", this.investment.address);
 
         this.InvestmentFactory = await ethers.getContractFactory("InvestmentFactory", owner);
         this.investmentFactory = await this.InvestmentFactory.deploy(this.investment.address)
-        console.log("=== Investment factory contract address: ", this.investmentFactory.address);
-        
+
         FundingToken = await ethers.getContractFactory('USDC');
         fundingToken = await FundingToken.deploy(5000 * 10 ** 6);
-        console.log("=== Funding token address: ", fundingToken.address);
         DaoToken = await ethers.getContractFactory('DAOToken');
         daoToken = await FundingToken.deploy(5000 * 10 ** 6);
-        console.log("=== dao token address: ", daoToken.address);
         
         adminAddress = await owner.getAddress()
         const name = 'DAOname';
@@ -34,6 +29,7 @@ describe('InvestmentFactory', function () {
         const daoAddress = '0xd71b3bd6E47B3B99aE939fbD75D3aa7002059727';
 
         args = [
+            adminAddress,
             name,
             description,
             fundingGoal,
@@ -69,13 +65,83 @@ describe('InvestmentFactory', function () {
             await expect(this.investmentFactory.createDAOFunding(...args)).to
                 .emit(this.investmentFactory, 'InvestmentCreated')
                 .withArgs(await this.investmentFactory.investments(0));
-        })
+        });
+
     });
 
     //////////////////////////////
     //  Investment
     //////////////////////////////
-    describe("Investment", function () {
+    describe("Deposit funding tokens", function () {
+        it('should fail when it receives 0 token', async () => {
 
+        });
+
+        it('should fail if investor does not have enough tokens', async () => {
+            await this.investmentFactory.createDAOFunding(...args);
+            const investmentChildAddress = this.investmentFactory.investments(0);
+            const investmentChildContract = this.investment.attach(investmentChildAddress);
+            await fundingToken.transfer(investor1.address, 50);
+            const investorBalance = await fundingToken.balanceOf(investor1.address);
+            expect(investorBalance).to.equal(50);
+
+            await expect(
+                investmentChildContract.connect(investor1).depositAllocation(100)
+            ).to.be.revertedWith('Not enough tokens');
+            
+            expect(
+                await fundingToken.balanceOf(owner.address)
+            ).to.equal(investorBalance);
+        });
+
+        it('should not allow an investor to participate twice', async () => {
+
+        });
+
+        it('should not receive more than the campaign goal', async () => {
+
+        });
+
+        it('should be called after the starting date and before the ending date', async () => {
+
+        });
+
+        it('should add the investor to the campaign', async () => {
+
+        });
+
+        it('should flag the investor as someone who invested in the campaign', async () => {
+
+        });
+
+        it('should update the balances after transfer', async () => {
+
+        });
+    });
+    describe("Distribute DAO tokens", function () {
+        it('should be called after the campaign is over', async () => {
+
+        });
+
+        it('should have reached the campaign goal', async () => {
+
+        });
+
+        it('should transfer the right amount of token to the investors', async () => {
+
+        });
+    });
+    describe("Extend campaign duration", function () {
+        it('should be called when the campaign is over', async () => {
+
+        });
+
+        it('should be called when the campaign goal has not been reached', async () => {
+
+        });
+
+        it('should set the campaign end date one week later', async () => {
+
+        });
     });
 });
