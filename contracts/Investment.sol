@@ -80,6 +80,10 @@ contract Investment is Initializable, AccessControl {
         require(_amount > 0, "Can't invest 0 token");
         require(msg.sender.balance >= _amount, "Not enough tokens");
         require(!user.hasInvested, "This user already invested");
+        require(
+            campaign.totalInvestedAmount + _amount <= campaign.fundingGoal,
+            "Can't invest more than the campaign goal"
+        );
         require(block.timestamp >= campaign.startDate, "The campaign has not started yet");
         require(block.timestamp < campaign.endDate, "The campaign is over");
 

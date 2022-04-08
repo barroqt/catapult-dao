@@ -76,8 +76,8 @@
       ]
     },
     "/Users/thomas/dev/avalanche/catapult-dao/contracts/Investment.sol": {
-      "lastModificationDate": 1649320740336,
-      "contentHash": "6ac0d875be4c64e3eb9d123ccc80efef",
+      "lastModificationDate": 1649327366292,
+      "contentHash": "bfa218eeec205a727db799d05e3d0f6c",
       "sourceName": "contracts/Investment.sol",
       "solcConfig": {
         "version": "0.8.2",
