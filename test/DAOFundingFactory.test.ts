@@ -5,7 +5,8 @@ describe('InvestmentFactory', function () {
     let adminAddress, owner, investor1, investor2, investors; // roles
     let args; // test params\
     let investment, investmentFactory, fundingToken, daoToken, investmentChildContract; // contracts
-
+    let investor1Balance; // balances
+ 
     before(async function () {
         [owner, investor1, investor2, ...investors] = await ethers.getSigners();
 
@@ -25,10 +26,11 @@ describe('InvestmentFactory', function () {
             investor1.address,
             ethers.utils.parseEther("2")
         );
-        // await fundingToken.connect(investor1).approve(
-        //     investmentFactory.address,
-        //     ethers.utils.parseEther("50")
-        //   );
+
+        await fundingToken.connect(investor1).approve(
+            investmentFactory.address,
+            ethers.utils.parseEther("2")
+        );
 
         adminAddress = await owner.getAddress()
         const name = 'DAOname';
@@ -82,28 +84,55 @@ describe('InvestmentFactory', function () {
     //  Investment
     //////////////////////////////
     describe("Deposit funding tokens", function () {
-        it('should fail when it receives 0 token', async () => {
-
-        });
-
-        it('should fail if investor does not have enough tokens', async () => {
+        beforeEach(async function () {
             await investmentFactory.createDAOFunding(...args);
             const investmentChildAddress = await investmentFactory.investments(0);
             investmentChildContract = investment.attach(investmentChildAddress);
+            investor1Balance = await fundingToken.balanceOf(investor1.address); // 2
+        })
 
-            const investorBalance = await fundingToken.balanceOf(investor1.address);
+        it('should fail when it receives 0 token', async () => {
+            await expect(
+                investmentChildContract.connect(investor1).depositAllocation(ethers.utils.parseEther('0'))
+            ).to.be.revertedWith("Can't invest 0 token");
+            
+            expect(
+                await fundingToken.balanceOf(investor1.address)
+            ).to.equal(investor1Balance);
+        });
 
+        it('should fail if investor does not have enough tokens', async () => {
             await expect(
                 investmentChildContract.connect(investor1).depositAllocation(ethers.utils.parseEther('3'))
             ).to.be.revertedWith('Not enough tokens');
             
             expect(
                 await fundingToken.balanceOf(investor1.address)
-            ).to.equal(investorBalance);
+            ).to.equal(investor1Balance);
         });
 
         it('should not allow an investor to participate twice', async () => {
+            // TODO: fix ERC20: insufficient allowance
+            // console.log("balance:", investor1Balance);
+            // await investmentChildContract.connect(investor1).depositAllocation(ethers.utils.parseEther('1'))
 
+            // investor1Balance = await fundingToken.balanceOf(investor1.address); // 2
+
+            // console.log("balance1:", investor1Balance);
+            // expect(
+            //     await fundingToken.balanceOf(investor1.address)
+            // ).to.equal(ethers.utils.parseEther('1'));
+
+            // await expect(
+            //     investmentChildContract.connect(investor1).depositAllocation(ethers.utils.parseEther('0.5'))
+            // ).to.be.revertedWith('This user already invested');
+
+            // investor1Balance = await fundingToken.balanceOf(investor1.address); // 2
+
+            // console.log("balance2:", investor1Balance);
+            // expect(
+            //     await fundingToken.balanceOf(investor1.address)
+            // ).to.equal(ethers.utils.parseEther('1'));
         });
 
         it('should not receive more than the campaign goal', async () => {

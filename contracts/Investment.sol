@@ -71,8 +71,8 @@ contract Investment is Initializable, AccessControl {
 
     function depositAllocation(uint _amount) external payable {
         UserInfo memory user = getUserInfo[msg.sender];
-        uint investorIdx = campaign.investors.length;
 
+        require(fundingToken.approve(msg.sender, _amount), "approve failed");
         require(_amount > 0, "Can't invest 0 token");
         require(fundingToken.balanceOf(msg.sender) >= _amount, "Not enough tokens");
         require(!user.hasInvested, "This user already invested");
@@ -83,7 +83,7 @@ contract Investment is Initializable, AccessControl {
         require(block.timestamp >= campaign.startDate, "The campaign has not started yet");
         require(block.timestamp < campaign.endDate, "The campaign is over");
 
-        campaign.investors[investorIdx] = msg.sender; // Add this user to the list of investors for the current campaign
+        campaign.investors.push(msg.sender); // Add this user to the list of investors for the current campaign
         user.hasInvested = true; // Add this user to the list of investors for the current campaign
         user.investedAmount += _amount; // The amount of token invested for this campaign
         campaign.totalInvestedAmount += _amount; // increase the total amount of token this campaign has received
@@ -109,7 +109,7 @@ contract Investment is Initializable, AccessControl {
 
             if (_investorInfo.hasInvested) {
                 uint _amountToDistribute = amountToDistribute(_investorInfo.investedAmount);
-                
+
                 campaign.daoToken.transferFrom(address(this), _currentInvestor, _amountToDistribute);
             }
         }
