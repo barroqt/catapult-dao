@@ -4,6 +4,7 @@ pragma solidity >=0.7.0 <0.9.0;
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "hardhat/console.sol";
 
 contract Investment is Initializable, AccessControl {
     // User status
@@ -68,17 +69,12 @@ contract Investment is Initializable, AccessControl {
         _;
     }
 
-    // modifier onlyInvestor() {
-    //     require(msg.sender == investor, "Only the investor can do that");
-    //     _;
-    // }
-
     function depositAllocation(uint _amount) external payable {
         UserInfo memory user = getUserInfo[msg.sender];
         uint investorIdx = campaign.investors.length;
 
         require(_amount > 0, "Can't invest 0 token");
-        require(msg.sender.balance >= _amount, "Not enough tokens");
+        require(fundingToken.balanceOf(msg.sender) >= _amount, "Not enough tokens");
         require(!user.hasInvested, "This user already invested");
         require(
             campaign.totalInvestedAmount + _amount <= campaign.fundingGoal,
