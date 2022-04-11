@@ -76,8 +76,8 @@
       ]
     },
     "/Users/thomas/dev/avalanche/catapult-dao/contracts/Investment.sol": {
-      "lastModificationDate": 1649327366292,
-      "contentHash": "bfa218eeec205a727db799d05e3d0f6c",
+      "lastModificationDate": 1649690488161,
+      "contentHash": "35f3c10981eff91c7a1f18a22a1e4ca9",
       "sourceName": "contracts/Investment.sol",
       "solcConfig": {
         "version": "0.8.2",
@@ -105,7 +105,8 @@
       "imports": [
         "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol",
         "@openzeppelin/contracts/access/AccessControl.sol",
-        "@openzeppelin/contracts/token/ERC20/IERC20.sol"
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "hardhat/console.sol"
       ],
       "versionPragmas": [
         ">=0.7.0 <0.9.0"
@@ -552,8 +553,8 @@
       ]
     },
     "/Users/thomas/dev/avalanche/catapult-dao/contracts/USDC.sol": {
-      "lastModificationDate": 1648370818431,
-      "contentHash": "567e86c48c9595310de660632f379854",
+      "lastModificationDate": 1649666027895,
+      "contentHash": "b83cbedb488d522bad7e2c68680fd337",
       "sourceName": "contracts/USDC.sol",
       "solcConfig": {
         "version": "0.8.2",
@@ -589,8 +590,8 @@
       ]
     },
     "/Users/thomas/dev/avalanche/catapult-dao/contracts/DAOToken.sol": {
-      "lastModificationDate": 1648370812645,
-      "contentHash": "4340049e454931cee001cc7166e07f23",
+      "lastModificationDate": 1649662927545,
+      "contentHash": "68650c291adda50f5f3e2d52da7b4202",
       "sourceName": "contracts/DAOToken.sol",
       "solcConfig": {
         "version": "0.8.2",
@@ -616,13 +617,49 @@
         }
       },
       "imports": [
-        "@openzeppelin/contracts/token/ERC20/ERC20.sol"
+        "@openzeppelin/contracts/token/ERC20/ERC20.sol",
+        "@openzeppelin/contracts/access/Ownable.sol"
       ],
       "versionPragmas": [
         "^0.8.0"
       ],
       "artifacts": [
         "DAOToken"
+      ]
+    },
+    "/Users/thomas/dev/avalanche/catapult-dao/node_modules/hardhat/console.sol": {
+      "lastModificationDate": 1648346518913,
+      "contentHash": "cc4777addd464ea56fa35b1c45df0591",
+      "sourceName": "hardhat/console.sol",
+      "solcConfig": {
+        "version": "0.8.2",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.4.22 <0.9.0"
+      ],
+      "artifacts": [
+        "console"
       ]
     }
   }
