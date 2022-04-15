@@ -4,46 +4,64 @@ pragma solidity >=0.7.0 <0.9.0;
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "hardhat/console.sol";
 
-// TODO(system): implement logic around DAO (deposit, withdraw, distribute)
 contract Investment is Initializable, AccessControl {
     // User status
     address public admin;
     address public investor;
-    address public daoAddress;
 
-    // Funding round
-    uint256 public fundingGoal; // Total campaign target
-    uint256 public startDate;
-    uint256 public endDate;
-    uint256 public userSpentAmount = 0; // final size
-    uint256 public allocatedMaxAmount; // initial size
-    // no use case yet, but would be useful to show the max potential token distributed if investors fulfills the allocation
-    uint256 public maxPercentageDistributed;
+    // campaign info
+    struct CampaignInfo {
+        string _name;
+        string _description;
 
-    // User balances
-    mapping(address => uint) balances;
+        uint256 fundingGoal; // Total campaign target
+        uint256 startDate; // Funding campaign start date
+        uint256 endDate; // Funding campaign end date
+        IERC20 daoToken; // Token airdroped to investors
+        uint256 totalInvestedAmount;
 
-    // An Allocation has an Investor 
-    mapping(address => uint256) public investedAmount; // amount to be replaced with allocation struct
-    mapping(address => uint256) public percentageDistributed; // amount to be replaced with allocation struct
-    // who already invested to avoid investing twice
-    mapping(address => bool) public hasInvested;
+        address daoAddress; // external DAO contract
+        address[] investors; // make a list of all the investors for the campaign
+    }
+    CampaignInfo public campaign;
+
+    // User info
+    struct UserInfo {
+        uint256 investedAmount; // Amount of funding tokens invested by user
+        bool hasInvested; // who already invested to avoid investing twice
+    }
+    mapping(address => UserInfo) public getUserInfo;
 
     IERC20 public fundingToken;
-    IERC20 public daoToken;
    
-    function init(uint256 _fundingGoal, uint256 _allocatedMaxAmount, uint256 _startDate, uint256 _endDate, address _fundingToken, address _daoToken, address _investor, address _daoAddress) external initializer {
-        investor = _investor;
-        balances[investor] = investor.balance;
-        fundingGoal = _fundingGoal;
-        allocatedMaxAmount = _allocatedMaxAmount;
-        startDate = _startDate;
-        endDate = _endDate;
+    function init(
+        address _admin,
+        string memory _name,
+        string memory _description,
+        uint256 _fundingGoal,
+        uint256 _startDate,
+        uint256 _endDate,
+        address _daoToken,
+        address _daoAddress,
+        address _fundingToken
+    ) external initializer {
+        admin = _admin;
+        address[] memory initAddressList;
+
+        campaign = CampaignInfo({
+            _name: _name,
+            _description: _description,
+            fundingGoal: _fundingGoal,
+            startDate: _startDate,
+            endDate: _endDate,
+            daoToken: IERC20(_daoToken),
+            totalInvestedAmount: 0,
+            daoAddress: _daoAddress,
+            investors: initAddressList
+        });
         fundingToken = IERC20(_fundingToken);
-        daoToken = IERC20(_daoToken);
-        maxPercentageDistributed = (allocatedMaxAmount * 100) / fundingGoal;
-        daoAddress = _daoAddress;
     }
 
     modifier onlyAdmin() {
@@ -51,45 +69,59 @@ contract Investment is Initializable, AccessControl {
         _;
     }
 
-    modifier onlyInvestor() {
-        require(msg.sender == investor, "Only the investor can do that");
-        _;
+    function depositAllocation(uint _amount) external payable {
+        UserInfo memory user = getUserInfo[msg.sender];
+
+        require(fundingToken.approve(msg.sender, _amount), "approve failed");
+        require(_amount > 0, "Can't invest 0 token");
+        require(fundingToken.balanceOf(msg.sender) >= _amount, "Not enough tokens");
+        require(!user.hasInvested, "This user already invested");
+        require(
+            campaign.totalInvestedAmount + _amount <= campaign.fundingGoal,
+            "Can't invest more than the campaign goal"
+        );
+        require(block.timestamp >= campaign.startDate, "The campaign has not started yet");
+        require(block.timestamp < campaign.endDate, "The campaign is over");
+
+        campaign.investors.push(msg.sender); // Add this user to the list of investors for the current campaign
+        user.hasInvested = true; // Add this user to the list of investors for the current campaign
+        user.investedAmount += _amount; // The amount of token invested for this campaign
+        campaign.totalInvestedAmount += _amount; // increase the total amount of token this campaign has received
+        fundingToken.transferFrom(msg.sender, address(this), _amount); // Deposit in the smart contract
     }
 
-    function depositAllocation(uint _amount) external payable onlyInvestor {
-        require(_amount > 0, "Can't invest 0 token");
-        require(balances[msg.sender] >= _amount, "Not enough tokens");
-        require(!hasInvested[msg.sender], "This user already invested");
-        require(userSpentAmount + _amount <= fundingGoal, "Can't invest more than the campaign goal");
-        require(userSpentAmount + _amount <= allocatedMaxAmount, "Can't invest more than the allocated amount");
-        require(block.timestamp >= startDate, "The campaign has not started yet");
-        require(block.timestamp < endDate, "The campaign is over");
-
-        percentageDistributed[msg.sender] = (userSpentAmount * 100) / fundingGoal;
-        hasInvested[msg.sender] = true; // We know this address is eligible for rewards
-        investedAmount[msg.sender] = _amount; // We know the amount invested by this address
-        userSpentAmount += _amount; // The amount of token invested for this campaign
-        fundingToken.transferFrom(msg.sender, address(this), _amount);
+    function amountToDistribute(uint256 _investedAmount) internal view returns(uint) {
+        uint _percentageDistributed = (_investedAmount * 100) / campaign.fundingGoal; // % received as the reward is calculated after the campaign ends
+        uint _amountToDistribute = (_percentageDistributed * 100) / campaign.daoToken.balanceOf(address(this));
+        return _amountToDistribute;
     }
 
     // todo : make sure dao has transfered enough tokens
+    // Admin sends the DAO token to the investors
     function distributeToken() external onlyAdmin() {
-        require(block.timestamp > endDate, "The campaign is not over");
-        require(fundingGoal == fundingToken.balanceOf(address(this)));
-        require(hasInvested[investor], "This user did not invest");
-        hasInvested[investor] = false;
-        uint amountToSend = fundingToken.balanceOf(address(this));
-        uint amountToDistribute = (percentageDistributed[investor] * 100) / daoToken.balanceOf(address(this));
-        fundingToken.transfer(daoAddress, amountToSend);
-        daoToken.transferFrom(msg.sender, investor, amountToDistribute);
+        require(block.timestamp > campaign.endDate, "The campaign is not over");
+        require(campaign.fundingGoal == fundingToken.balanceOf(address(this)));
+
+        // Loops through everyone that has invested in this campaign
+        for (uint i = 0; i < campaign.investors.length; i++) {
+            address _currentInvestor = campaign.investors[i];
+            UserInfo memory _investorInfo = getUserInfo[_currentInvestor];
+
+            if (_investorInfo.hasInvested) {
+                uint _amountToDistribute = amountToDistribute(_investorInfo.investedAmount);
+
+                campaign.daoToken.transferFrom(address(this), _currentInvestor, _amountToDistribute);
+            }
+        }
     }
 
-    // function extendDuration() external onlyAdmin() {
-    //     require(block.timestamp > endDate, "The campaign is not over");
-    //     require(userSpentAmount < allocatedMaxAmount, "The final goal had been reached.");
+    function extendDuration() external onlyAdmin() {
+        require(block.timestamp > campaign.endDate, "The campaign is not over");
+        require(
+            campaign.totalInvestedAmount >= campaign.fundingGoal,
+            "The final goal has already been reached."
+        );
 
-    //     endDate += 7 days;
-    //     // TODO: Complete unfinished allocations in a "free for all" manner
-    // }
-
+        campaign.endDate += 7 days;
+    }
 }

@@ -6,6 +6,7 @@ package-lock.json
 yarn.lock
 /artifacts
 /cache
+cache/solidity-files-cache.json
 
 # testing
 /coverage

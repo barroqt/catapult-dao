@@ -19,20 +19,21 @@ contract InvestmentFactory is CloneFactory, Ownable {
     function setMasterContractAddress(address _masterContractAddress) public onlyOwner {
         masterContractAddress = _masterContractAddress;
     }
-//address _daoToken, address _investor, address _daoAddress
+
     function createDAOFunding(
-        uint256 fundingGoal,
-        uint256 allocatedMaxAmount,
-        uint256 startDate,
-        uint256 endDate,
-        address fundingToken,
-        address daoToken,
-        address investor,
-        address daoAddress
+            string memory name,
+            string memory description,
+            uint256 fundingGoal,
+            uint256 startDate,
+            uint256 endDate,
+            address daoToken,
+            address daoAddress,
+            address fundingToken
         ) public onlyOwner {
         address clone = createClone(masterContractAddress);
+        address admin = msg.sender;
         Investment(clone).init(
-            fundingGoal,allocatedMaxAmount,startDate,endDate,fundingToken, daoToken, investor, daoAddress
+            admin,name,description,fundingGoal,startDate,endDate,daoToken,daoAddress,fundingToken
         );
         investments.push(Investment(clone));
         emit InvestmentCreated(clone);
