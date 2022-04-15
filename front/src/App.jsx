@@ -48,12 +48,19 @@ const styles = {
     alignItems: "center",
     fontFamily: "Roboto, sans-serif",
   },
+  headerSub: {
+    background: "#eee",
+    lineHeight: '39px',
+    textAlign: 'center',
+    height: '40px'
+  }
 };
 
 function App() {
   const {
-      web3,
-      signer,
+    web3,
+    signer,
+    account,
   } = useContext(Web3Context);
   const isLogged = (web3 && signer);
 
@@ -67,6 +74,11 @@ function App() {
               <Title level={5}>CatapultDAO</Title>
             </Link>
             <MenuItems isLogged={isLogged} />
+          </div>
+          <div style={styles.headerSub}>
+            {account && <p>
+              {account.network.name} - {account.network.chainId}
+            </p>}
           </div>
         </Header>
 

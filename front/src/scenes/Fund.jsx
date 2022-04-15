@@ -124,7 +124,7 @@ export default function Fund(props) {
       {fundData 
         && fundData.owner
         && !isOwner(fundData.owner) 
-        && <Button type="primary" onClick={showModal}>Participate</Button>}
+        && <Button type="primary" onClick={doParticipate}>Participate</Button>}
       {fundData 
         && fundData.owner
         && isOwner(fundData.owner) 
@@ -141,13 +141,13 @@ export default function Fund(props) {
           data={fundData && fundData.participants ? fundData.participants : []}
         />
       </Card>
-      {fundData 
+      {/*fundData 
         && <ModalParticipate
           title={"Partipate to" + fundData.name}
           isModalVisible={isModalVisible}
           onOk={handleOk}
           onCancel={handleCancel}
-        />}
+        />*/}
     </div>
   );
 

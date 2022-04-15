@@ -53,13 +53,15 @@ export default {
     },
     local: {
       url: 'http://127.0.0.1:8545',
-      gasPrice: 225000000000
+      gasPrice: 225000000000,
+      chainId: 1337,
+      accounts: [`0x8b3a350cf5c34c9194ca85829a2df0ec3153be0318b5e2d3348e872092edffba`]
     },
     fuji: {
       url: 'https://api.avax-test.network/ext/bc/C/rpc',
       gasPrice: 225000000000,
       chainId: 43113,
-      accounts: [`0x${process.env.FUJI_PRIVATE_KEY}`]
+      accounts: [`0x5b16b5071a1004e0aaac528ecd086b956c5bdadf3aab60d73e3984e9567f043b`]
     },
     mainnet: {
       url: 'https://api.avax.network/ext/bc/C/rpc',

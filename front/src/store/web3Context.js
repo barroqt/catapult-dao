@@ -52,12 +52,12 @@ const Web3Context = React.createContext({
     account: null,
     loading: false,
     factoryContract: null,
-    
+
     loadingDAO: false,
     successDAO: false,
     errorDAO: false,
     createDAO: () => {},
-    
+
     approve: () => {},
     initWeb3Modal: () => {},
     doParticipate: () => {},
@@ -113,7 +113,7 @@ export const Web3ContextProvider = (props) => {
     }, [web3]);
 
     useEffect(() => {
-       window.ethereum.on('accountsChanged', accounts => console.log({ accounts }))
+       window.ethereum.on('accountsChanged', accounts => window.location.reload())
        window.ethereum.on('chainChanged', () => window.location.reload())
        window.ethereum.on('connect', (connectInfo) => { console.log({connectInfo}); })
     }, [])
@@ -124,7 +124,6 @@ export const Web3ContextProvider = (props) => {
             InvestmentFactoryAddress.Contract,
             InvestmentFactoryArtifact.abi,
             signer);
-
         setFactoryContract(investmentFactory);
     }
 
@@ -179,17 +178,26 @@ export const Web3ContextProvider = (props) => {
     }
 
     const doParticipate = async (/*amount*/) => {
+        console.log('doParticipate');
+        if (!fundData) return false;
         try {
-            //await factoryContract.createDAOFunding(10);
+            console.log({ fundData });
+            const investment = new ethers.Contract(
+                fundData.addr,
+                InvestmentArtifact.abi,
+                signer);
+
+            console.log({ investment });
+            const deposit = await investment.depositAllocation(10);
+            console.log({ deposit });
             /*const addr = await signer.getAddress();
             setParticipation({
                 key: 1,
                 address: addr,
                 amount
             });*/
-            console.log('doParticipate');
         } catch (e) {
-            console.log(e)
+            console.log(e);
         }
     }
 
@@ -236,7 +244,6 @@ export const Web3ContextProvider = (props) => {
             setSuccessDAO(false);
             setErrorDAO(false);
             setLoadingDAO(true);
-            
             const create = await factoryContract.createDAOFunding(
                 data.name, // name
                 '', // desc
