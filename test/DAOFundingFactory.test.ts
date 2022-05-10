@@ -37,7 +37,7 @@ describe('InvestmentFactory', function () {
         const description = 'this is a description of the DAO';
         const fundingGoal = ethers.utils.parseEther('10');
         const startDate = Math.round(new Date('April 5, 2022 03:24:00').getTime()/1000);
-        const endDate = Math.round(new Date('April 29, 2022 03:24:00').getTime()/1000);
+        const endDate = Math.round(new Date('May 29, 2022 03:24:00').getTime()/1000);
         const daoAddress = '0xd71b3bd6E47B3B99aE939fbD75D3aa7002059727';
 
         args = [
@@ -112,27 +112,27 @@ describe('InvestmentFactory', function () {
         });
 
         it('should not allow an investor to participate twice', async () => {
+            console.log("balance:", investor1Balance);
             // TODO: fix ERC20: insufficient allowance
-            // console.log("balance:", investor1Balance);
-            // await investmentChildContract.connect(investor1).depositAllocation(ethers.utils.parseEther('1'))
+            await investmentChildContract.connect(investor1).depositAllocation(ethers.utils.parseEther('1'))
 
-            // investor1Balance = await fundingToken.balanceOf(investor1.address); // 2
+            investor1Balance = await fundingToken.balanceOf(investor1.address); // 2
 
-            // console.log("balance1:", investor1Balance);
-            // expect(
-            //     await fundingToken.balanceOf(investor1.address)
-            // ).to.equal(ethers.utils.parseEther('1'));
+            console.log("balance1:", investor1Balance);
+            expect(
+                await fundingToken.balanceOf(investor1.address)
+            ).to.equal(ethers.utils.parseEther('1'));
 
-            // await expect(
-            //     investmentChildContract.connect(investor1).depositAllocation(ethers.utils.parseEther('0.5'))
-            // ).to.be.revertedWith('This user already invested');
+            await expect(
+                investmentChildContract.connect(investor1).depositAllocation(ethers.utils.parseEther('0.5'))
+            ).to.be.revertedWith('This user already invested');
 
-            // investor1Balance = await fundingToken.balanceOf(investor1.address); // 2
+            investor1Balance = await fundingToken.balanceOf(investor1.address); // 2
 
-            // console.log("balance2:", investor1Balance);
-            // expect(
-            //     await fundingToken.balanceOf(investor1.address)
-            // ).to.equal(ethers.utils.parseEther('1'));
+            console.log("balance2:", investor1Balance);
+            expect(
+                await fundingToken.balanceOf(investor1.address)
+            ).to.equal(ethers.utils.parseEther('1'));
         });
 
         it('should not receive more than the campaign goal', async () => {

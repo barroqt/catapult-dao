@@ -76,8 +76,8 @@
       ]
     },
     "/Users/thomas/dev/avalanche/catapult-dao/contracts/Investment.sol": {
-      "lastModificationDate": 1649690488161,
-      "contentHash": "35f3c10981eff91c7a1f18a22a1e4ca9",
+      "lastModificationDate": 1649881381503,
+      "contentHash": "cb4a482300cbc0a73a610e21f71836fd",
       "sourceName": "contracts/Investment.sol",
       "solcConfig": {
         "version": "0.8.2",
@@ -553,8 +553,8 @@
       ]
     },
     "/Users/thomas/dev/avalanche/catapult-dao/contracts/USDC.sol": {
-      "lastModificationDate": 1649666027895,
-      "contentHash": "b83cbedb488d522bad7e2c68680fd337",
+      "lastModificationDate": 1652211469540,
+      "contentHash": "0394fc6205d8177bbcc3aeb1595b497e",
       "sourceName": "contracts/USDC.sol",
       "solcConfig": {
         "version": "0.8.2",
@@ -590,8 +590,8 @@
       ]
     },
     "/Users/thomas/dev/avalanche/catapult-dao/contracts/DAOToken.sol": {
-      "lastModificationDate": 1649662927545,
-      "contentHash": "68650c291adda50f5f3e2d52da7b4202",
+      "lastModificationDate": 1652211539984,
+      "contentHash": "db273013786cb89a435f4bcc0ee5544b",
       "sourceName": "contracts/DAOToken.sol",
       "solcConfig": {
         "version": "0.8.2",

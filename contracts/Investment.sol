@@ -71,6 +71,8 @@ contract Investment is Initializable, AccessControl {
 
     function depositAllocation(uint _amount) external payable {
         UserInfo memory user = getUserInfo[msg.sender];
+        console.log("=== avant", user.hasInvested);
+        console.log("=== avant2", user.investedAmount);
 
         require(fundingToken.approve(msg.sender, _amount), "approve failed");
         require(_amount > 0, "Can't invest 0 token");
@@ -86,7 +88,10 @@ contract Investment is Initializable, AccessControl {
         campaign.investors.push(msg.sender); // Add this user to the list of investors for the current campaign
         user.hasInvested = true; // Add this user to the list of investors for the current campaign
         user.investedAmount += _amount; // The amount of token invested for this campaign
+        console.log("==== user", user.hasInvested);
+        console.log("==== user", user.investedAmount);
         campaign.totalInvestedAmount += _amount; // increase the total amount of token this campaign has received
+        fundingToken.approve(msg.sender, _amount); // Deposit in the smart contract
         fundingToken.transferFrom(msg.sender, address(this), _amount); // Deposit in the smart contract
     }
 
